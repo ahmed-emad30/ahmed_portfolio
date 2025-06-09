@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
 
 import 'package:dotted_border/dotted_border.dart' show BorderType, DottedBorder;
 import 'package:flutter/material.dart';
@@ -57,7 +56,7 @@ class PortfolioBody extends StatelessWidget {
                   ],
                 ),
                 Stack(
-                  alignment: Alignment.bottomCenter,
+                  alignment: Alignment(0,0.7),
                   children: [
                     Container(
                       // optional overlay
@@ -81,19 +80,20 @@ class PortfolioBody extends StatelessWidget {
                     ),
 
                     Stack(
-                      alignment: Alignment.centerLeft,
+                      alignment: Alignment(-2.5,0),
                       children: [
                         Padding(
                           // padding:EdgeInsets.zero,
-                          padding: EdgeInsets.only(left: 0.16.sw),
+                          padding: EdgeInsets.only(left: 0.175.sw,bottom: 40),
                           child: Assets.images.photos.portfolio1.image(
-                            height: 0.65.sh,
+                            height: 0.62.sh,
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(bottom: 50.h, left: 30.w),
+                          padding: EdgeInsets.only(left: 0.088.sw,bottom: 0.13.sh),
                           child: Assets.images.photos.portfolio2.image(
-                            height: 0.56.sh,
+                            height: 0.59.sh,
+
                           ),
                         ),
                       ],
