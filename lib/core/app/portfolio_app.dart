@@ -6,6 +6,7 @@ import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/widgets/app_screen_navigator.dart';
 
 import '../../features/home/presentation/home_screen/ui/home_screen.dart' show HomeScreen;
+import '../../features/portfolio/presentation/portfolio_screen/ui/all_projects_screen.dart' show AllProjectsScreen;
 import '../app_themes/themes/app_light_theme.dart';
 
 class PortfolioApp extends StatelessWidget {
@@ -21,7 +22,7 @@ class PortfolioApp extends StatelessWidget {
       builder: (_, child) {
         return MaterialApp.router(
           routerConfig: GoRouter(
-            initialLocation: Routes.portfolioScreen,
+            initialLocation: Routes.allProjectsScreen,
             routes: [
               GoRoute(path: Routes.homeScreen, builder: (context, state) => const HomeScreen()),
 

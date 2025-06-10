@@ -8,4 +8,5 @@ sealed class Routes {
   static const String portfolioScreen = '${baseRoute}portfolioScreen';
   static const String servicesScreen = '${baseRoute}servicesScreen';
   static const String skillsScreen = '${baseRoute}skillsScreen';
+  static const String allProjectsScreen = '${baseRoute}allProjectsScreen';
 }

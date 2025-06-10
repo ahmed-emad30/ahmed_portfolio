@@ -14,15 +14,11 @@ class HomeScreen extends StatelessWidget {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          SizedBox(
+          $AssetsImagesPhotosGen().texture.image(
             width: 1.sw,
             height: 1.sh,
-            child: $AssetsImagesPhotosGen().texture.image(
-              // width: 1.sw,
-              // height: 1.sh,
-              fit: BoxFit.cover,
-              color: AppColors.secondary.withValues(alpha: 255*0.4),
-            ),
+            fit: BoxFit.cover,
+            color: AppColors.secondary.withValues(alpha: 255*0.4),
           ),
           // $AssetsImagesSvgGen().texture.svg(color: Colors.red),
           const HeroBody(),

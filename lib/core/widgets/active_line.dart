@@ -13,6 +13,7 @@ class ActiveLine extends StatelessWidget {
     return Container(
       width: 35.w,
       height: 5.r,
+      margin: REdgeInsets.only(bottom: 6),
       decoration: BoxDecoration(
         color: AppColors.primary,
         borderRadius: BorderRadius.circular(5.r),
