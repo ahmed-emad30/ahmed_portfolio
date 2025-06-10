@@ -22,24 +22,12 @@ class AllProjectsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: REdgeInsets.only(top: 100),
-      child: CustomScrollView(
-
-        slivers: [
-          SliverAppBar(
-            floating: false,        // App bar won't reappear as soon as you scroll up
-            pinned: false,           // App bar will remain visible at the top
-            snap: false,
-            centerTitle: false,
-            toolbarHeight: 200.h,
-            collapsedHeight: 200.h,
-          expandedHeight: 300.h,
-            backgroundColor: AppColors.transparent,
-            surfaceTintColor: AppColors.transparent,
-            shadowColor: AppColors.transparent,
-            // : AppColors.transparent,
-            title: Column(
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return  Padding(
+            padding:  REdgeInsets.only(top: 120.h,bottom: 80.h),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -55,29 +43,22 @@ class AllProjectsScreen extends StatelessWidget {
                   text: 'Projects',
                   strokeWidth: 2,
                   fontSize: 96.spMin,
-                  // height: 0.8,
-                  // letterSpacing: 0,
+            // height: 0.8,
+            // letterSpacing: 0,
                 ),
               ],
             ),
-
-          ),
-
-          SliverFixedExtentList(
-            delegate: SliverChildBuilderDelegate(
-      (BuildContext context, int index)  => Container(
-                  width: 1.sw,
-                  height: 343.h,
-                  margin: EdgeInsets.only(bottom: 50.h),
-                  color: AppColors.red,
-                  child: Text('index $index'),
-                ),
-              childCount: 10,
-              ), itemExtent: 393.h,
-            ),
-
-        ],
-      ),
+          );
+        }
+        return Container(
+          width: 1.sw,
+          height: 343.h,
+          margin: EdgeInsets.only(bottom: 50.h),
+          color: AppColors.red,
+          child: Text('index $index'),
+        );
+      },
     );
   }
 }
+

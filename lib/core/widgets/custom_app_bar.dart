@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Colors, SliverAppBar;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:portfolio/core/widgets/theme_toggle_button.dart' show ThemeToggleButton;
 import 'package:portfolio/core/widgets/top_app_navigator.dart' show TopAppNavigator;
@@ -8,19 +9,27 @@ class CustomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
-      height: 1.sh,
-      padding: EdgeInsetsDirectional.only(start: 60.w,),
-      alignment: Alignment.topCenter,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TopAppNavigator(),
+    return  SliverAppBar(
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: Colors.transparent,
+      elevation: 0,
+/*      floating: true,
+      pinned: false,
+      snap: true,*/
+      flexibleSpace: Container(
+        height: 1.sh,
+        alignment: Alignment.topCenter,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TopAppNavigator(),
 
-          ThemeToggleButton(),
+            ThemeToggleButton(),
 
-        ],
+          ],
+        ),
       ),
     );
   }

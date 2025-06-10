@@ -1,3 +1,5 @@
+import 'dart:developer' show log;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -5,8 +7,10 @@ import 'package:portfolio/core/app_routes/app_router.dart';
 import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/widgets/app_screen_navigator.dart';
 
-import '../../features/home/presentation/home_screen/ui/home_screen.dart' show HomeScreen;
-import '../../features/portfolio/presentation/portfolio_screen/ui/all_projects_screen.dart' show AllProjectsScreen;
+import '../../features/home/presentation/home_screen/ui/home_screen.dart'
+    show HomeScreen;
+import '../../features/portfolio/presentation/portfolio_screen/ui/all_projects_screen.dart'
+    show AllProjectsScreen;
 import '../app_themes/themes/app_light_theme.dart';
 
 class PortfolioApp extends StatelessWidget {
@@ -24,15 +28,18 @@ class PortfolioApp extends StatelessWidget {
           routerConfig: GoRouter(
             initialLocation: Routes.allProjectsScreen,
             routes: [
-              GoRoute(path: Routes.homeScreen, builder: (context, state) => const HomeScreen()),
+              GoRoute(
+                path: Routes.homeScreen,
+                builder: (context, state) => const HomeScreen(),
+              ),
 
               ShellRoute(
                 builder: (context, state, child) {
-
-                  return AppScreenNavigator(path: state.path, child: child,
-                );
+                  return AppScreenNavigator(path: state.matchedLocation, sliver: child);
                 },
-                routes: AppRouter.generateRoute)],
+                routes: AppRouter.generateRoute,
+              ),
+            ],
           ),
           debugShowCheckedModeBanner: false,
           title: 'Ahmed Emad Portfolio',
