@@ -1,4 +1,3 @@
-import 'dart:developer' show log;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show BuildContext, Scaffold, StatelessWidget, Widget;
@@ -10,12 +9,15 @@ import '../../gen/assets.gen.dart' show $AssetsImagesPhotosGen, Assets;
 import '../app_themes/colors/app_colors.dart' show AppColors;
 
 class AppScreenNavigator extends StatelessWidget {
-  const AppScreenNavigator({super.key,  required this.path, required this.sliver});
+  const AppScreenNavigator({super.key,  required this.path, required this.sliver,  this.hasList=false, this.bottom});
 final String? path;
 final Widget sliver;
+final Widget? bottom;
+final bool hasList;
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      bottomNavigationBar: bottom,
 
 
       body: path == Routes.aboutScreen?Stack(
@@ -37,7 +39,7 @@ final Widget sliver;
     return Container(
           width: 1.sw,
           height: 1.sh,
-          padding: EdgeInsets.symmetric(horizontal: 60.w),
+          // padding: EdgeInsets.symmetric(horizontal: 60.w),
           decoration: BoxDecoration(
             image: DecorationImage(image: $AssetsImagesPhotosGen().texture.provider(),
             fit: BoxFit.cover,
@@ -48,12 +50,24 @@ final Widget sliver;
             )
           ),
           child: CustomScrollView(
+
             slivers: [
-              CustomAppBar(),
-              SliverFillRemaining(
-                child: sliver,
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 60.w),
+                sliver: CustomAppBar(),
+              ),
+
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 60.w),
+
+                sliver: hasList?sliver:SliverFillRemaining(
+                  child: sliver,
+                ),
               )
               // sliver
+
+
+
             ],
           ),
         );

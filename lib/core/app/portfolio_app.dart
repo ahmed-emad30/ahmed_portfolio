@@ -1,4 +1,3 @@
-import 'dart:developer' show log;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,13 +25,13 @@ class PortfolioApp extends StatelessWidget {
       builder: (_, child) {
         return MaterialApp.router(
           routerConfig: GoRouter(
-            initialLocation: Routes.allProjectsScreen,
+            initialLocation: Routes.contactScreen,
             routes: [
               GoRoute(
                 path: Routes.homeScreen,
                 builder: (context, state) => const HomeScreen(),
               ),
-
+              GoRoute(path: Routes.allProjectsScreen, builder: (context, state) => const AllProjectsScreen()),
               ShellRoute(
                 builder: (context, state, child) {
                   return AppScreenNavigator(path: state.matchedLocation, sliver: child);

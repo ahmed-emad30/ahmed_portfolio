@@ -24,7 +24,7 @@ class AppNavigatorItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isActive = GoRouter.of(context).state.fullPath == item.route;
+    final isActive = GoRouter.of(context).state.fullPath?.contains(item.route)??false;
     return GestureDetector(
       onTap: () {
         if (!isActive) {

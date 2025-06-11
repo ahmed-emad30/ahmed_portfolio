@@ -37,6 +37,7 @@ sealed class AppColors {
   static const Color lightGreyColor = Color(0xffaeaeae);
   static const Color shadow = Color(0xff7e7e7e);
   static const Color whiteText = Color(0xffe1e1e1);
+  static const Color pageText = Color(0xffcccccc);
 
   static const Color bookedChairColor = Color(0xFFE8E8E8);
   static const Color textFieldBorder = zn300;

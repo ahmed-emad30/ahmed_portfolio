@@ -26,6 +26,7 @@ sealed class AppTextStyle {
   static TextStyle get style16Regular => _textStyle(16, FontWeightHelper.regular);
   static TextStyle get style13Regular => _textStyle(13, FontWeightHelper.regular);
   static TextStyle get style15Medium => _textStyle(15, FontWeightHelper.medium);
+  static TextStyle get style10Medium => _textStyle(10, FontWeightHelper.medium);
   static TextStyle get style16Medium => _textStyle(16, FontWeightHelper.medium);
   static TextStyle get style24Medium => _textStyle(24, FontWeightHelper.medium);
 

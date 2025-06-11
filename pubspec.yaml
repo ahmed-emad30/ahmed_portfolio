@@ -64,6 +64,7 @@ flutter:
      - assets/images/svg/
      - assets/images/test/
      - assets/fonts/poppins/
+     - assets/fonts/inter/
 
 
   fonts:
@@ -85,6 +86,11 @@ flutter:
            weight: 700
          - asset: assets/fonts/poppins/Poppins-ExtraBold.ttf
            weight: 800
+
+     - family: inter
+       fonts:
+         - asset: assets/fonts/inter/Inter-Medium.ttf
+           weight: 500
 flutter_gen:
   output: lib/gen/
   assets:
