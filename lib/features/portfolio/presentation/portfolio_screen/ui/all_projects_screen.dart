@@ -98,7 +98,6 @@ bla bla bla bla ''',
     ];
     return AppScreenNavigator(
       hasList: true,
-      bottom: Footer(),
 
       sliver: SliverList.builder(
         itemCount: projects.length > 8 ? 10 : projects.length + 1,

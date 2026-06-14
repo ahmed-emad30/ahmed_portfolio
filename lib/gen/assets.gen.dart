@@ -15,6 +15,9 @@ import 'package:vector_graphics/vector_graphics.dart' as _vg;
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
+  /// Directory path: assets/fonts/inter
+  $AssetsFontsInterGen get inter => const $AssetsFontsInterGen();
+
   /// Directory path: assets/fonts/poppins
   $AssetsFontsPoppinsGen get poppins => const $AssetsFontsPoppinsGen();
 }
@@ -27,6 +30,16 @@ class $AssetsImagesGen {
 
   /// Directory path: assets/images/svg
   $AssetsImagesSvgGen get svg => const $AssetsImagesSvgGen();
+}
+
+class $AssetsFontsInterGen {
+  const $AssetsFontsInterGen();
+
+  /// File path: assets/fonts/inter/Inter-Medium.ttf
+  String get interMedium => 'assets/fonts/inter/Inter-Medium.ttf';
+
+  /// List of all assets
+  List<String> get values => [interMedium];
 }
 
 class $AssetsFontsPoppinsGen {
@@ -135,6 +148,14 @@ class $AssetsImagesPhotosGen {
 class $AssetsImagesSvgGen {
   const $AssetsImagesSvgGen();
 
+  /// File path: assets/images/svg/bottom_left.svg
+  SvgGenImage get bottomLeft =>
+      const SvgGenImage('assets/images/svg/bottom_left.svg');
+
+  /// File path: assets/images/svg/bottom_right.svg
+  SvgGenImage get bottomRight =>
+      const SvgGenImage('assets/images/svg/bottom_right.svg');
+
   /// File path: assets/images/svg/cv.svg
   SvgGenImage get cv => const SvgGenImage('assets/images/svg/cv.svg');
 
@@ -170,6 +191,14 @@ class $AssetsImagesSvgGen {
   /// File path: assets/images/svg/texture.svg
   SvgGenImage get texture => const SvgGenImage('assets/images/svg/texture.svg');
 
+  /// File path: assets/images/svg/top_left.svg
+  SvgGenImage get topLeft =>
+      const SvgGenImage('assets/images/svg/top_left.svg');
+
+  /// File path: assets/images/svg/top_right.svg
+  SvgGenImage get topRight =>
+      const SvgGenImage('assets/images/svg/top_right.svg');
+
   /// File path: assets/images/svg/whats.svg
   SvgGenImage get whats => const SvgGenImage('assets/images/svg/whats.svg');
 
@@ -178,6 +207,8 @@ class $AssetsImagesSvgGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+    bottomLeft,
+    bottomRight,
     cv,
     darkMode,
     email,
@@ -188,6 +219,8 @@ class $AssetsImagesSvgGen {
     linkedIn,
     rightArrow,
     texture,
+    topLeft,
+    topRight,
     whats,
     x,
   ];

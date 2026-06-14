@@ -10,6 +10,9 @@
 class FontFamily {
   FontFamily._();
 
+  /// Font family: inter
+  static const String inter = 'inter';
+
   /// Font family: poppins
   static const String poppins = 'poppins';
 }

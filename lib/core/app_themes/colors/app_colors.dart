@@ -12,8 +12,10 @@ sealed class AppColors {
   static const Color green = Color(0xFF38B000);
   static const Color red = Color(0xFFC1121F);
   static const Color white = Color(0xFFFFFFFF);
+  static const Color offWhite = Color(0xffdddddd);
   static const Color black = Color(0xFF000000);
   static const Color transparent = Colors.transparent;
+
 
   /// Global Widget UI Colors
   static const Color scaffoldBackground = Color(0xffD4D4D4);

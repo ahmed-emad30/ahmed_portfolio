@@ -25,7 +25,7 @@ class PortfolioApp extends StatelessWidget {
       builder: (_, child) {
         return MaterialApp.router(
           routerConfig: GoRouter(
-            initialLocation: Routes.contactScreen,
+            initialLocation: Routes.homeScreen,
             routes: [
               GoRoute(
                 path: Routes.homeScreen,

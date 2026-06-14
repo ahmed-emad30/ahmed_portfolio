@@ -5,19 +5,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/widgets/custom_app_bar.dart';
 
+import '../../features/portfolio/presentation/portfolio_screen/ui/all_projects_screen.dart' show Footer;
 import '../../gen/assets.gen.dart' show $AssetsImagesPhotosGen, Assets;
 import '../app_themes/colors/app_colors.dart' show AppColors;
 
 class AppScreenNavigator extends StatelessWidget {
-  const AppScreenNavigator({super.key,  required this.path, required this.sliver,  this.hasList=false, this.bottom});
+  const AppScreenNavigator({super.key,  required this.path, required this.sliver,  this.hasList=false, });
 final String? path;
 final Widget sliver;
-final Widget? bottom;
 final bool hasList;
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      bottomNavigationBar: bottom,
+      bottomNavigationBar: path == Routes.allProjectsScreen||path == Routes.contactScreen?Footer():null,
 
 
       body: path == Routes.aboutScreen?Stack(
