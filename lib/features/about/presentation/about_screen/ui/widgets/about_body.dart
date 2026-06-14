@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:portfolio/core/app_themes/colors/app_colors.dart';
+import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 
 import '../../../../../../core/utils/app_methods.dart' show AppMethods;
@@ -12,7 +12,8 @@ class AboutBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final isLarge = 1.sw>500;
+    final theme = context.portfolioTheme;
+
     return Padding(
       padding: EdgeInsets.only(top: 120.h),
       child: Column(
@@ -26,7 +27,7 @@ class AboutBody extends StatelessWidget {
               height: 0.8,
               letterSpacing: 0,
               foreground:
-              AppMethods.textStroke(color: AppColors.primary),
+              AppMethods.textStroke(color: theme.primaryAccent),
             ),
           ),
           16.verticalSpace,
@@ -40,7 +41,7 @@ class AboutBody extends StatelessWidget {
               style: AppTextStyle.style24Regular.copyWith(
                 height: 26 / 24.spMin,
                 letterSpacing: 0,
-                color: AppColors.labelTextColor,
+                color: theme.bodyText,
               ),
             ),
           ),

@@ -1,207 +1,193 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart'
-    show
-        BoxDecoration,
-        BoxFit,
-        BoxShadow,
-        BuildContext,
-        Color,
-        Column,
-        Container,
-        CrossAxisAlignment,
-        DecorationImage,
-        Expanded,
-        MainAxisSize,
-        Offset,
-        Padding,
-        Row,
-        SliverList,
-        StatelessWidget,
-        Text,
-        TextAlign,
-        TextDirection,
-        Widget;
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/app_themes/colors/app_colors.dart';
+import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
+import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
+import 'package:portfolio/core/utils/portfolio_content.dart';
+import 'package:portfolio/core/widgets/app_screen_navigator.dart';
+import 'package:portfolio/core/widgets/hover_interaction.dart';
+import 'package:portfolio/features/portfolio/domain/entity/project_entity.dart';
 import 'package:portfolio/features/portfolio/presentation/portfolio_screen/ui/widgets/portfolio_body.dart'
     show OutlineText;
+import 'package:portfolio/gen/assets.gen.dart';
 
-import '../../../../../core/app_routes/routes_strings.dart' show Routes;
-import '../../../../../core/app_themes/text_style/app_text_style.dart';
-import '../../../../../core/widgets/app_screen_navigator.dart'
-    show AppScreenNavigator;
-import '../../../../../gen/assets.gen.dart'
-    show $AssetsImagesPhotosGen, AssetGenImage, Assets;
-
-class AllProjectsScreen extends StatelessWidget {
+class AllProjectsScreen extends StatefulWidget {
   const AllProjectsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final projects = [
-      ProjectEntity(
-        title: 'Taggz',
-        description: '''An IOS and Android app for bla bla bla bla bla
-bla bla bla bla bla bla bla blabla blabla bla bla bla bla bla bla bla
-bla bla bla bla
-bla bla bla bla ''',
-        image: $AssetsImagesPhotosGen().taggz,
-      ),
-      ProjectEntity(
-        title: 'iConcierge',
-        description:
-            '''An IOS and Android app for bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla''',
-        image: $AssetsImagesPhotosGen().iconcierge,
-      ),
-      ProjectEntity(
-        title: 'Wepick',
-        description:
-            '''An IOS and Android app for bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla''',
-        image: $AssetsImagesPhotosGen().wepick,
-      ),
-      ProjectEntity(
-        title: 'All Traders',
-        description:
-            '''An IOS and Android app for bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla''',
-        image: $AssetsImagesPhotosGen().alltraders,
-      ),
-      ProjectEntity(
-        title: 'Taggz',
-        description:
-            '''An IOS and Android app for bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla''',
-        image: $AssetsImagesPhotosGen().taggz,
-      ),
-      ProjectEntity(
-        title: 'iConcierge',
-        description:
-            '''An IOS and Android app for bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla''',
-        image: $AssetsImagesPhotosGen().iconcierge,
-      ),
-      ProjectEntity(
-        title: 'Wepick',
-        description:
-            '''An IOS and Android app for bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla''',
-        image: $AssetsImagesPhotosGen().wepick,
-      ),
-      ProjectEntity(
-        title: 'All Traders',
-        description:
-            '''An IOS and Android app for bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla''',
-        image: $AssetsImagesPhotosGen().alltraders,
-      ),
-      ProjectEntity(
-        title: 'All Traders',
-        description:
-            '''An IOS and Android app for bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla''',
-        image: $AssetsImagesPhotosGen().alltraders,
-      ),
+  State<AllProjectsScreen> createState() => _AllProjectsScreenState();
+}
+
+class _AllProjectsScreenState extends State<AllProjectsScreen> {
+  int _currentPage = 0;
+
+  List<ProjectEntity> get _projects {
+    final base = PortfolioContent.projects;
+    return [
+      ...base,
+      ...base,
     ];
+  }
+
+  int get _totalPages =>
+      (_projects.length / PortfolioContent.projectsPerPage).ceil();
+
+  List<ProjectEntity> get _visibleProjects {
+    final start = _currentPage * PortfolioContent.projectsPerPage;
+    final end = (start + PortfolioContent.projectsPerPage).clamp(
+      0,
+      _projects.length,
+    );
+    return _projects.sublist(start, end);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return AppScreenNavigator(
       hasList: true,
-
+      path: Routes.allProjectsScreen,
       sliver: SliverList.builder(
-        itemCount: projects.length > 8 ? 10 : projects.length + 1,
+        itemCount: _visibleProjects.length + 2,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
-            return ExploreNow();
-          } else if (index == 9) {
+            return const ExploreNow();
+          }
 
+          if (index == _visibleProjects.length + 1) {
             return Padding(
               padding: REdgeInsets.only(bottom: 48.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 5.w,
-
-                children: [
-                  PageItem(title: 'Prev',),
-                  PageItem(title: '1',onTap: (){},isActive: true,),
-                  PageItem(title: '2',onTap: (){},),
-                  PageItem(title: '3',onTap: (){},),
-                  PageItem(title: '...',onTap: (){},),
-                  PageItem(title: '10',onTap: (){},),
-                  PageItem(title: 'Next',onTap: (){},),
-                ],
+              child: _ProjectsPagination(
+                currentPage: _currentPage,
+                totalPages: _totalPages,
+                onPageSelected: (page) => setState(() => _currentPage = page),
               ),
             );
           }
-          final project = projects[index - 1];
 
-          return ProjectsItem(index: index, project: project);
+          final project = _visibleProjects[index - 1];
+          final globalIndex =
+              (_currentPage * PortfolioContent.projectsPerPage) + index;
+
+          return ProjectsItem(
+            index: globalIndex,
+            project: project,
+          );
         },
       ),
-      path: Routes.allProjectsScreen,
     );
   }
 }
 
 class Footer extends StatelessWidget {
-  const Footer({
-    super.key,
-  });
+  const Footer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
+
     return Container(
       width: 1.sw,
       height: 60.h,
-      // margin: REdgeInsets.only(top: 48.h),
       alignment: Alignment.center,
-      color: AppColors.secondary,
+      color: theme.footerBackground,
       child: RichText(
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
         text: TextSpan(
-            text:
-            'Ahmed Emad © 2025. Designed by ',
-            style: AppTextStyle.style10Medium.copyWith(
-              color: AppColors.whiteText,
-              fontFamily: 'inter',
-              height: 1.0, // 100% of fontSize
-              letterSpacing: 0,
-            ),
-            children: [
-              TextSpan(
-                  text:
-                  'AE Studio',
+          text: 'Ahmed Emad © 2025. Designed by ',
+          style: AppTextStyle.style10Medium.copyWith(
+            color: AppColors.whiteText,
+            fontFamily: 'inter',
+            height: 1.0,
+            letterSpacing: 0,
+          ),
+          children: [
+            TextSpan(
+              text: 'AE Studio',
+              style: AppTextStyle.style10Medium.copyWith(
+                color: theme.primaryAccent,
+                fontFamily: 'inter',
+                height: 1.0,
+                letterSpacing: 0,
+              ),
+              children: [
+                TextSpan(
+                  text: '. All Rights Reserved',
                   style: AppTextStyle.style10Medium.copyWith(
-                    color: AppColors.primary,
+                    color: AppColors.whiteText,
                     fontFamily: 'inter',
-                    height: 1.0, // 100% of fontSize
+                    height: 1.0,
                     letterSpacing: 0,
                   ),
-                  children: [
-                    TextSpan(
-                      text:
-                      '. All Rights Reserved',
-                      style: AppTextStyle.style10Medium.copyWith(
-                        color: AppColors.whiteText,
-                        fontFamily: 'inter',
-                        height: 1.0, // 100% of fontSize
-                        letterSpacing: 0,
-                      ),
-
-                    )
-                  ]
-
-              )
-            ]
-
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class PageItem extends StatelessWidget {
-  const PageItem({
-    super.key, required this.title,  this.isActive=false, this.onTap,
+class _ProjectsPagination extends StatelessWidget {
+  const _ProjectsPagination({
+    required this.currentPage,
+    required this.totalPages,
+    required this.onPageSelected,
   });
-final String title;
-final bool isActive;
-final VoidCallback? onTap;
+
+  final int currentPage;
+  final int totalPages;
+  final ValueChanged<int> onPageSelected;
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 5.w,
+      children: [
+        PageItem(
+          title: 'Prev',
+          onTap: currentPage > 0 ? () => onPageSelected(currentPage - 1) : null,
+        ),
+        ...List.generate(totalPages, (index) {
+          return PageItem(
+            title: '${index + 1}',
+            isActive: index == currentPage,
+            onTap: () => onPageSelected(index),
+          );
+        }),
+        PageItem(
+          title: 'Next',
+          onTap: currentPage < totalPages - 1
+              ? () => onPageSelected(currentPage + 1)
+              : null,
+        ),
+      ],
+    );
+  }
+}
+
+class PageItem extends StatelessWidget {
+  const PageItem({
+    super.key,
+    required this.title,
+    this.isActive = false,
+    this.onTap,
+  });
+
+  final String title;
+  final bool isActive;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
+
+    return HoverInteraction(
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
@@ -210,12 +196,19 @@ final VoidCallback? onTap;
           minHeight: 32.dm,
         ),
         decoration: BoxDecoration(
-          color: isActive?AppColors.primary:AppColors.white,
+          color: isActive ? theme.primaryAccent : theme.paginationInactive,
           borderRadius: BorderRadius.circular(8.r),
         ),
-       child:  Text(title,style: AppTextStyle.style13Regular.copyWith(
-         color: onTap==null?AppColors.pageText:isActive?AppColors.white:AppColors.primary
-       ),)
+        child: Text(
+          title,
+          style: AppTextStyle.style13Regular.copyWith(
+            color: onTap == null
+                ? AppColors.pageText
+                : isActive
+                    ? AppColors.white
+                    : theme.primaryAccent,
+          ),
+        ),
       ),
     );
   }
@@ -229,13 +222,14 @@ class ProjectsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
     final isOdd = index % 2 == 1;
     final has2Digits = index > 9;
+
     return Container(
       width: 1.sw,
       height: 343.4.h,
       margin: REdgeInsets.only(bottom: 80.h),
-      // color: AppColors.primary,
       child: Row(
         textDirection: isOdd ? TextDirection.ltr : TextDirection.rtl,
         children: [
@@ -249,46 +243,37 @@ class ProjectsItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${has2Digits ? index : '0$index'}',
-                    textAlign: TextAlign.start,
+                    has2Digits ? '$index' : '0$index',
                     style: AppTextStyle.style48ExtraBold.copyWith(
                       height: 56 / 48.spMin,
-                      // line-height ÷ font-size = 1.25
                       letterSpacing: -0.02 * 48.spMin,
-                      // -2% of font size = -0.64
-                      color: AppColors.primary,
+                      color: theme.primaryAccent,
                     ),
                   ),
                   Padding(
                     padding: REdgeInsets.symmetric(vertical: 28),
                     child: Text(
                       '${project.title} Application',
-                      textAlign: TextAlign.start,
                       style: AppTextStyle.style32Bold.copyWith(
                         height: 40 / 32.spMin,
-                        // line-height ÷ font-size = 1.25
                         letterSpacing: -0.02 * 32.spMin,
-                        // -2% of font size = -0.64
-                        color: AppColors.primary,
+                        color: theme.primaryAccent,
                       ),
                     ),
                   ),
                   Expanded(
                     child: Text(
-                      project.description,
-                      textAlign: TextAlign.start,
+                      project.shortDescription,
                       maxLines: 4,
                       style: AppTextStyle.style16Regular.copyWith(
                         height: 24 / 16.spMin,
-                        // line-height ÷ font-size = 1.25
                         letterSpacing: -0.02 * 16.spMin,
-                        // -2% of font size = -0.64
-                        color: AppColors.zn400,
+                        color: theme.bodyText.withValues(alpha: 0.85),
                       ),
                     ),
                   ),
                   20.verticalSpace,
-                  DetailsButton(),
+                  DetailsButton(projectId: project.id),
                 ],
               ),
             ),
@@ -300,25 +285,31 @@ class ProjectsItem extends StatelessWidget {
 }
 
 class DetailsButton extends StatelessWidget {
-  const DetailsButton({super.key});
+  const DetailsButton({super.key, required this.projectId});
+
+  final String projectId;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          'View full project details',
-          style: AppTextStyle.style15Medium.copyWith(
-            color: AppColors.primary,
-            height: 56 / 15.spMin,
-            // line-height ÷ font-size = 1.25
-            letterSpacing: -0.02 * 15.spMin,
+    final theme = context.portfolioTheme;
+
+    return HoverInteraction(
+      onTap: () => context.push(Routes.projectDetailsPath(projectId)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'View full project details',
+            style: AppTextStyle.style15Medium.copyWith(
+              color: theme.primaryAccent,
+              height: 56 / 15.spMin,
+              letterSpacing: -0.02 * 15.spMin,
+            ),
           ),
-        ),
-        8.horizontalSpace,
-        Assets.images.svg.export.svg(),
-      ],
+          8.horizontalSpace,
+          Assets.images.svg.export.svg(),
+        ],
+      ),
     );
   }
 }
@@ -339,14 +330,13 @@ class ProjectCover extends StatelessWidget {
         bottom: 10,
         end: 16,
       ),
-
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Color(0x00000040),
+            color: const Color(0x00000040),
             blurRadius: 12.r,
             spreadRadius: 0,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
         image: DecorationImage(image: image.provider(), fit: BoxFit.contain),
@@ -360,6 +350,8 @@ class ExploreNow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
+
     return Padding(
       padding: REdgeInsets.only(top: 120.h, bottom: 80.h),
       child: Column(
@@ -369,7 +361,7 @@ class ExploreNow extends StatelessWidget {
           Text(
             'Explore Now!',
             style: AppTextStyle.style40ExtraBold.copyWith(
-              color: AppColors.fillColor,
+              color: theme.bodyText,
               height: 0.8,
               letterSpacing: 0,
             ),
@@ -378,23 +370,9 @@ class ExploreNow extends StatelessWidget {
             text: 'Projects',
             strokeWidth: 2,
             fontSize: 96.spMin,
-            // height: 0.8,
-            // letterSpacing: 0,
           ),
         ],
       ),
     );
   }
-}
-
-class ProjectEntity {
-  final String title;
-  final String description;
-  final AssetGenImage image;
-
-  ProjectEntity({
-    required this.title,
-    required this.description,
-    required this.image,
-  });
 }

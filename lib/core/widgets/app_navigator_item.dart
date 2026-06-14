@@ -1,19 +1,12 @@
 import 'dart:developer' show log;
 
-import 'package:flutter/material.dart'
-    show
-        BuildContext,
-        Column,
-        GestureDetector,
-        MainAxisSize,
-        StatelessWidget,
-        Text,
-        Widget;
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:portfolio/core/app_routes/routes_strings.dart';
 
-import 'package:go_router/go_router.dart' show GoRouter, GoRouterHelper;
 import '../../features/shared/domain/entity/navigator_item_entity.dart'
     show NavigatorItemEntity;
-import '../app_themes/colors/app_colors.dart' show AppColors;
+import '../app_themes/colors/portfolio_theme_extension.dart';
 import '../app_themes/text_style/app_text_style.dart' show AppTextStyle;
 import 'active_line.dart' show ActiveLine;
 
@@ -22,30 +15,50 @@ class AppNavigatorItem extends StatelessWidget {
 
   final NavigatorItemEntity item;
 
+  static bool isRouteActive(String location, String route) {
+    if (route == Routes.homeScreen) {
+      return location == Routes.homeScreen;
+    }
+    if (route == Routes.portfolioScreen) {
+      return location == Routes.portfolioScreen ||
+          location.startsWith('${Routes.portfolioScreen}/');
+    }
+    return location == route;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isActive = GoRouter.of(context).state.fullPath?.contains(item.route)??false;
-    return GestureDetector(
-      onTap: () {
-        if (!isActive) {
-          log('current route: ${GoRouter.of(context).state.fullPath}');
-          context.go(item.route);
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isActive) ActiveLine(),
-          Text(
-            item.title,
-            style: AppTextStyle.style24Regular.copyWith(
-              height: 26 / 24, // line-height ÷ font-size
-              letterSpacing: 0,
-              color: AppColors.labelTextColor,
-            ),
+    final router = GoRouter.of(context);
+
+    return ListenableBuilder(
+      listenable: router.routerDelegate,
+      builder: (context, _) {
+        final location = router.state.matchedLocation;
+        final isActive = isRouteActive(location, item.route);
+
+        return GestureDetector(
+          onTap: () {
+            if (!isActive) {
+              log('current route: $location');
+              context.go(item.route);
+            }
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isActive) const ActiveLine(),
+              Text(
+                item.title,
+                style: AppTextStyle.style24Regular.copyWith(
+                  height: 26 / 24,
+                  letterSpacing: 0,
+                  color: context.portfolioTheme.navText,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

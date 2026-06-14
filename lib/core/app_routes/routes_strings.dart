@@ -9,4 +9,9 @@ sealed class Routes {
   static const String servicesScreen = '${baseRoute}servicesScreen';
   static const String skillsScreen = '${baseRoute}skillsScreen';
   static const String allProjectsScreen = '$portfolioScreen/allProjectsScreen';
+  static const String projectDetailsRoute =
+      '$portfolioScreen/project/:projectId';
+
+  static String projectDetailsPath(String projectId) =>
+      '$portfolioScreen/project/$projectId';
 }

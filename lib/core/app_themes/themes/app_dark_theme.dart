@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/app_themes/colors/app_colors.dart';
+import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/utils/app_constants.dart';
 import 'package:portfolio/core/utils/app_strings.dart';
@@ -8,15 +10,20 @@ sealed class AppDarkThemes {
   static ThemeData call() {
     return ThemeData(
       useMaterial3: true,
-      scaffoldBackgroundColor: AppColors.scaffoldBackground,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: AppColors.darkScaffoldBackgroundColor,
       fontFamily: AppStrings.enFont,
       fontFamilyFallback: [AppStrings.arFont],
-      pageTransitionsTheme: const PageTransitionsTheme(
-        builders: {TargetPlatform.android: CupertinoPageTransitionsBuilder()},
+      extensions: const [PortfolioThemeExtension.dark],
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: const CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
+        },
       ),
       appBarTheme: AppBarTheme(
-        color: AppColors.appbarBackground,
-        // titleTextStyle: AppTextStyle.style24SemiBold,
+        backgroundColor: AppColors.darkScaffoldBackgroundColor,
         centerTitle: true,
         scrolledUnderElevation: 0,
         elevation: 0,
@@ -26,9 +33,8 @@ sealed class AppDarkThemes {
         ),
         actionsIconTheme: const IconThemeData(color: Colors.white),
         surfaceTintColor: Colors.transparent,
-        // shadowColor: Colors.grey,
       ),
-      tabBarTheme: TabBarTheme(
+      tabBarTheme: TabBarThemeData(
         labelColor: AppColors.zn200,
         labelStyle: AppTextStyle.style16Medium,
         unselectedLabelColor: AppColors.zn300,
@@ -42,26 +48,24 @@ sealed class AppDarkThemes {
         brightness: Brightness.dark,
         primary: AppColors.primary,
         onPrimary: AppColors.white,
-        onSurface: AppColors.white,
+        surface: AppColors.darkScaffoldBackgroundColor,
+        onSurface: AppColors.darkTextColor,
       ),
       switchTheme: SwitchThemeData(
         thumbIcon: WidgetStateProperty.resolveWith(
-          (states) =>
-              states.contains(WidgetState.selected)
-                  ? const Icon(Icons.check, color: AppColors.primary, size: 20)
-                  : const Icon(Icons.close, size: 20),
+          (states) => states.contains(WidgetState.selected)
+              ? const Icon(Icons.check, color: AppColors.primary, size: 20)
+              : const Icon(Icons.close, size: 20),
         ),
         trackColor: WidgetStateProperty.resolveWith(
-          (states) =>
-              states.contains(WidgetState.selected)
-                  ? AppColors.primary
-                  : AppColors.white,
+          (states) => states.contains(WidgetState.selected)
+              ? AppColors.primary
+              : AppColors.white,
         ),
         thumbColor: WidgetStateProperty.resolveWith(
-          (states) =>
-              states.contains(WidgetState.selected)
-                  ? AppColors.white
-                  : AppColors.primary,
+          (states) => states.contains(WidgetState.selected)
+              ? AppColors.white
+              : AppColors.primary,
         ),
         trackOutlineColor: WidgetStateProperty.resolveWith(
           (states) =>
@@ -80,21 +84,11 @@ sealed class AppDarkThemes {
       ),
       badgeTheme: const BadgeThemeData(backgroundColor: AppColors.red),
       checkboxTheme: CheckboxThemeData(
-        checkColor: WidgetStateProperty.all(
-          AppColors.primary,
-        ), // Checkmark color
-        fillColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return AppColors.white;
-          }
-          return AppColors.white;
-        }),
+        checkColor: WidgetStateProperty.all(AppColors.primary),
+        fillColor: WidgetStateProperty.resolveWith((states) => AppColors.white),
       ),
       navigationBarTheme: NavigationBarThemeData(
         height: 74,
-        // labelTextStyle: WidgetStatePropertyAll<TextStyle>(
-        //   // AppTextStyle.style14Light,
-        // ),
         overlayColor: const WidgetStatePropertyAll<Color>(AppColors.zn700),
         backgroundColor: AppColors.secondary,
       ),
@@ -102,8 +96,6 @@ sealed class AppDarkThemes {
         backgroundColor: AppColors.secondary,
         selectedItemColor: AppColors.white,
         unselectedItemColor: AppColors.zn300,
-        // selectedLabelStyle: AppTextStyle.style14Light,
-        // unselectedLabelStyle: AppTextStyle.style14Light,
         showSelectedLabels: true,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,

@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:portfolio/core/app_themes/colors/app_colors.dart';
+import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 
 import '../../../../../../core/app_themes/text_style/app_text_style.dart';
 import '../../../../../../core/utils/app_constants.dart' show AppConstants;
@@ -16,7 +16,7 @@ class HeroBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    final theme = context.portfolioTheme;
     int activeItem = 0;
 
     return SizedBox(
@@ -44,15 +44,26 @@ class HeroBody extends StatelessWidget {
                         right: BorderSide(
                           width: 30.w,
 
-                          color: AppColors.primary,
+                          color: theme.primaryAccent,
                         )
                       ),
 
                     ),
-                    child: $AssetsImagesPhotosGen().frontProfile.image(
-                      fit: BoxFit.fitHeight,
-                      height: 1.sh,
-                    ),
+                    child: theme.profileBlendMode == BlendMode.luminosity
+                        ? ColorFiltered(
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.luminosity,
+                            ),
+                            child: $AssetsImagesPhotosGen().frontProfile.image(
+                              fit: BoxFit.fitHeight,
+                              height: 1.sh,
+                            ),
+                          )
+                        : $AssetsImagesPhotosGen().frontProfile.image(
+                            fit: BoxFit.fitHeight,
+                            height: 1.sh,
+                          ),
                   ),
                 ),
 
@@ -76,7 +87,7 @@ class HeroBody extends StatelessWidget {
                                 style: AppTextStyle.style96ExtraBold.copyWith(
                                   fontSize: MediaQuery.textScalerOf(context).scale(96),
                                   height: 0.8,
-                                  color: AppColors.primary,
+                                  color: theme.primaryAccent,
                                 ),
                               ),
                             ),
@@ -87,9 +98,9 @@ class HeroBody extends StatelessWidget {
                                 maxLines: 1,
                                 minFontSize: 10,
                                 style: AppTextStyle.style36Bold.copyWith(
-                                  color: AppColors.secondary,
+                                  color: theme.bodyText,
                                   letterSpacing: 0,
-                                  height: 1
+                                  height: 1,
                                 ),
                               ),
                             ),
@@ -103,7 +114,10 @@ class HeroBody extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: List<Widget>.generate(
                             AppConstants.items.length,
-                            (index) => SideMenuItem( item: AppConstants.items[index], isActive:index==activeItem,  ),
+                            (index) => SideMenuItem(
+                              item: AppConstants.items[index],
+                              isActive: index == activeItem,
+                            ),
                           ),
                         ),
                       ),
@@ -130,6 +144,8 @@ final bool isActive;
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
+
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -147,17 +163,16 @@ final bool isActive;
                   end: 15.w,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: theme.primaryAccent,
                   borderRadius: BorderRadius.circular(5.r),
                 ),
               ),
-    
+
             AutoSizeText(
               item.title.toUpperCase(),
-              maxLines:1,
+              maxLines: 1,
               style: AppTextStyle.style32Regular.copyWith(
-                // fontSize: MediaQuery.textScalerOf(context).scale(32),
-                color: AppColors.secondary,
+                color: theme.bodyText,
               ),
             ),
           ],
