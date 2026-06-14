@@ -15,7 +15,7 @@ class ServicesBody extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Padding(
-          padding:  REdgeInsets.symmetric(vertical: 100),
+          padding: REdgeInsets.symmetric(vertical: 100),
           child: Column(
             children: [
               Row(

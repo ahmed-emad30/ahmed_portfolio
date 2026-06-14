@@ -11,18 +11,22 @@ class ThemeCubit extends Cubit<ThemeState> {
   }
 
   Future<void> _loadTheme() async {
-    final isDark = PrefHelper.get(PrefKeys.currentTheme) ?? false;
-    emit(ThemeChangedState(isDark: isDark));
+    try {
+      final isDark = PrefHelper.get(PrefKeys.currentTheme) ?? false;
+      emit(ThemeChangedState(isDark: isDark));
+    } catch (_) {
+      emit(const ThemeChangedState(isDark: false));
+    }
   }
 
   Future<void> changeTheme(bool isDark) async {
-    // AppDynamicColors.isDark = null;
-    await PrefHelper.save(PrefKeys.currentTheme, isDark);
     emit(ThemeChangedState(isDark: isDark));
+    try {
+      await PrefHelper.save(PrefKeys.currentTheme, isDark);
+    } catch (_) {}
   }
 
   Future<void> toggleTheme() async {
-    final currentTheme = state.isDark;
-    await changeTheme(!currentTheme);
+    await changeTheme(!state.isDark);
   }
 }
