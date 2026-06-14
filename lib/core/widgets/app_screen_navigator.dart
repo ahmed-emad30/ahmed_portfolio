@@ -1,9 +1,8 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:portfolio/core/app_routes/routes_strings.dart';
-import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
+import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/core/widgets/custom_app_bar.dart';
 import 'package:portfolio/core/widgets/portfolio_scaffold_background.dart';
 
@@ -31,34 +30,36 @@ class AppScreenNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.portfolioTheme.scaffoldGradientEnd,
+    final horizontalPadding = context.horizontalPadding;
+
+    return ShellScaffold(
       bottomNavigationBar: _showFooter ? const Footer() : null,
       body: path == Routes.aboutScreen
           ? Stack(
               alignment: AlignmentDirectional.centerEnd,
               children: [
-                _buildContainer(context),
-                Assets.images.photos.sideProfile.image(
-                  fit: BoxFit.cover,
-                  height: 1.sh,
-                ),
+                _buildScrollContent(context, horizontalPadding),
+                if (context.isDesktop)
+                  Assets.images.photos.sideProfile.image(
+                    fit: BoxFit.cover,
+                    height: 1.sh,
+                  ),
               ],
             )
-          : _buildContainer(context),
+          : _buildScrollContent(context, horizontalPadding),
     );
   }
 
-  Widget _buildContainer(BuildContext context) {
+  Widget _buildScrollContent(BuildContext context, double horizontalPadding) {
     return PortfolioScaffoldBackground(
       child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: 60.w),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             sliver: const CustomAppBar(),
           ),
           SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: 60.w),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             sliver: hasList
                 ? sliver
                 : SliverFillRemaining(

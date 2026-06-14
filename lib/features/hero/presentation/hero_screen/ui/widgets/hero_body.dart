@@ -3,126 +3,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
+import 'package:portfolio/core/utils/app_constants.dart';
+import 'package:portfolio/core/utils/responsive_values.dart';
+import 'package:portfolio/core/widgets/theme_toggle_button.dart';
+import 'package:portfolio/gen/assets.gen.dart';
 
 import '../../../../../../core/app_themes/text_style/app_text_style.dart';
-import '../../../../../../core/utils/app_constants.dart' show AppConstants;
-import '../../../../../../core/widgets/theme_toggle_button.dart' show ThemeToggleButton;
-import '../../../../../../gen/assets.gen.dart';
-import '../../../../../shared/domain/entity/navigator_item_entity.dart' show NavigatorItemEntity;
-import 'contact_section.dart' show ContactSection;
+import '../../../../../shared/domain/entity/navigator_item_entity.dart';
+import 'contact_section.dart';
 
 class HeroBody extends StatelessWidget {
   const HeroBody({super.key});
 
   @override
   Widget build(BuildContext context) {
+    if (context.isMobile) {
+      return const _HeroMobileLayout();
+    }
+    if (context.isTablet) {
+      return const _HeroTabletLayout();
+    }
+    return const _HeroDesktopLayout();
+  }
+}
+
+class _HeroDesktopLayout extends StatelessWidget {
+  const _HeroDesktopLayout();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
-    int activeItem = 0;
 
     return SizedBox(
       width: 1.sw,
       height: 1.sh,
-
       child: Row(
         children: [
-          ContactSection(),
+          const ContactSection(),
           Expanded(
             child: Row(
+              spacing: 32.w,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-
                 Expanded(
-                  flex: 1,
-                  child: Container(
-                    height: 1.sh,
-                    padding: EdgeInsets.zero,
-                    margin: EdgeInsetsDirectional.only(end: 20.w),
-                    clipBehavior: Clip.hardEdge,
-                    alignment: AlignmentDirectional.centerEnd,
-                    decoration: BoxDecoration(
-                      border: Border(
-                        right: BorderSide(
-                          width: 30.w,
-
-                          color: theme.primaryAccent,
-                        )
-                      ),
-
-                    ),
-                    child: theme.profileBlendMode == BlendMode.luminosity
-                        ? ColorFiltered(
-                            colorFilter: const ColorFilter.mode(
-                              Colors.white,
-                              BlendMode.luminosity,
-                            ),
-                            child: $AssetsImagesPhotosGen().frontProfile.image(
-                              fit: BoxFit.fitHeight,
-                              height: 1.sh,
-                            ),
-                          )
-                        : $AssetsImagesPhotosGen().frontProfile.image(
-                            fit: BoxFit.fitHeight,
-                            height: 1.sh,
-                          ),
-                  ),
+                  child: _ProfileImage(theme: theme),
                 ),
 
                 Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ThemeToggleButton(),
-
-                            Expanded(
-                              child: AutoSizeText(
-                                'Ahmed\nEmad.',
-                                maxLines: 2,
-                                minFontSize: 10,
-                                style: AppTextStyle.style96ExtraBold.copyWith(
-                                  fontSize: MediaQuery.textScalerOf(context).scale(96),
-                                  height: 0.8,
-                                  color: theme.primaryAccent,
-                                ),
-                              ),
-                            ),
-
-                            Expanded(
-                              child: AutoSizeText(
-                                'Flutter Developer',
-                                maxLines: 1,
-                                minFontSize: 10,
-                                style: AppTextStyle.style36Bold.copyWith(
-                                  color: theme.bodyText,
-                                  letterSpacing: 0,
-                                  height: 1,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: List<Widget>.generate(
-                            AppConstants.items.length,
-                            (index) => SideMenuItem(
-                              item: AppConstants.items[index],
-                              isActive: index == activeItem,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Spacer(flex: 1),
-                    ],
+                  child: _HeroContent(
+                    showThemeToggle: true,
+                    navFlex: true,
                   ),
                 ),
               ],
@@ -134,44 +64,254 @@ class HeroBody extends StatelessWidget {
   }
 }
 
-class SideMenuItem extends StatelessWidget {
-  const SideMenuItem({
-    super.key,
-    required this.item, required this.isActive,
-  });
-final NavigatorItemEntity item;
-final bool isActive;
+class _HeroTabletLayout extends StatelessWidget {
+  const _HeroTabletLayout();
 
   @override
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
 
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          context.go(item.route);
-        },
-    
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 72.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 420.h,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(child: _ProfileImage(theme: theme, compact: true)),
+                24.horizontalSpace,
+                Expanded(
+                  child: _HeroContent(
+                    showThemeToggle: false,
+                    navFlex: false,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          24.verticalSpace,
+          const ContactSection(horizontal: true),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroMobileLayout extends StatelessWidget {
+  const _HeroMobileLayout();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 24.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 320.h,
+            width: double.infinity,
+            child: _ProfileImage(theme: theme, compact: true),
+          ),
+          24.verticalSpace,
+          AutoSizeText(
+            'Ahmed\nEmad.',
+            maxLines: 2,
+            minFontSize: 28,
+            style: AppTextStyle.style96ExtraBold.copyWith(
+              fontSize: context.responsiveSp(
+                mobile: 48,
+                tablet: 64,
+                desktop: 96,
+              ),
+              height: 0.8,
+              color: theme.primaryAccent,
+            ),
+          ),
+          12.verticalSpace,
+          Text(
+            'Flutter Developer',
+            style: AppTextStyle.style36Bold.copyWith(
+              fontSize: context.responsiveSp(
+                mobile: 22,
+                tablet: 28,
+                desktop: 36,
+              ),
+              color: theme.bodyText,
+            ),
+          ),
+          32.verticalSpace,
+          const ContactSection(horizontal: true),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileImage extends StatelessWidget {
+  const _ProfileImage({required this.theme, this.compact = false});
+
+  final PortfolioThemeExtension theme;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final image = theme.profileBlendMode == BlendMode.luminosity
+        ? ColorFiltered(
+            colorFilter: const ColorFilter.mode(
+              Colors.white,
+              BlendMode.luminosity,
+            ),
+            child: Assets.images.photos.frontProfile.image(
+              fit: BoxFit.cover,
+              height: compact ? null : 1.sh,
+              width: double.infinity,
+            ),
+          )
+        : Assets.images.photos.frontProfile.image(
+            fit: BoxFit.cover,
+            height: compact ? null : 1.sh,
+            width: double.infinity,
+          );
+
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        border: Border(
+          right: compact
+              ? BorderSide.none
+              : BorderSide(width: 30.w, color: theme.primaryAccent),
+        ),
+      ),
+      child: image,
+    );
+  }
+}
+
+class _HeroContent extends StatelessWidget {
+  const _HeroContent({
+    required this.showThemeToggle,
+    required this.navFlex,
+  });
+
+  final bool showThemeToggle;
+  final bool navFlex;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (showThemeToggle) const ThemeToggleButton(),
+        Expanded(
+          flex: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Ahmed\nEmad.',
+                  maxLines: 2,
+                  minFontSize: 10,
+                  style: AppTextStyle.style96ExtraBold.copyWith(
+                    fontSize: context.responsiveSp(
+                      mobile: 48,
+                      tablet: 72,
+                      desktop: 96,
+                    ),
+                    height: 0.8,
+                    color: theme.primaryAccent,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: AutoSizeText(
+                  'Flutter Developer',
+                  maxLines: 1,
+                  minFontSize: 10,
+                  style: AppTextStyle.style36Bold.copyWith(
+                    color: theme.bodyText,
+                    height: 1,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          flex: 5,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(
+              AppConstants.items.length,
+              (index) => navFlex
+                  ? SideMenuItem(
+                      item: AppConstants.items[index],
+                      isActive: index == 0,
+                    )
+                  : SideMenuItem(
+                      item: AppConstants.items[index],
+                      isActive: index == 0,
+                      compact: true,
+                    ),
+            ),
+          ),
+        ),
+        if (navFlex) const Spacer(flex: 1),
+      ],
+    );
+  }
+}
+
+class SideMenuItem extends StatelessWidget {
+  const SideMenuItem({
+    super.key,
+    required this.item,
+    required this.isActive,
+    this.compact = false,
+  });
+
+  final NavigatorItemEntity item;
+  final bool isActive;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
+
+    final content = GestureDetector(
+      onTap: () => context.go(item.route),
+      child: Padding(
+        padding: REdgeInsets.symmetric(vertical: compact ? 8 : 0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (isActive)
               Container(
                 width: 5.w,
-                height: 50.h,
-                margin: EdgeInsetsDirectional.only(
-                  end: 15.w,
-                ),
+                height: compact ? 28.h : 50.h,
+                margin: EdgeInsetsDirectional.only(end: 15.w),
                 decoration: BoxDecoration(
                   color: theme.primaryAccent,
                   borderRadius: BorderRadius.circular(5.r),
                 ),
               ),
-
             AutoSizeText(
               item.title.toUpperCase(),
               maxLines: 1,
               style: AppTextStyle.style32Regular.copyWith(
+                fontSize: context.responsiveSp(
+                  mobile: 18,
+                  tablet: 24,
+                  desktop: 32,
+                ),
                 color: theme.bodyText,
               ),
             ),
@@ -179,18 +319,7 @@ final bool isActive;
         ),
       ),
     );
+
+    return compact ? content : Expanded(child: content);
   }
 }
-
-
-
-
-/*style: AppTextStyle.style154ExtraBold.copyWith(
-        // fontSize: 48,
-        // Use a Paint to draw only the stroke:
-        foreground: Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 4
-          ..color = Colors.black,
-      )*/
-

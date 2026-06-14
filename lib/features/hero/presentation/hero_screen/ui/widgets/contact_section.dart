@@ -1,37 +1,59 @@
-import 'package:flutter/material.dart' show BuildContext, Column, CrossAxisAlignment, CustomPaint, EdgeInsetsDirectional, Padding, Size, SizedBox, StatelessWidget, Widget;
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../gen/assets.gen.dart' show $AssetsImagesSvgGen;
-import 'contact_icon.dart' show ContactIcon;
-import 'dashed_line_painter.dart' show DashedLinePainter;
+import '../../../../../../gen/assets.gen.dart';
+import 'contact_icon.dart';
+import 'dashed_line_painter.dart';
 
 class ContactSection extends StatelessWidget {
-  const ContactSection({super.key});
+  const ContactSection({super.key, this.horizontal = false});
+
+  final bool horizontal;
 
   @override
   Widget build(BuildContext context) {
     final contacts = [
-      $AssetsImagesSvgGen().github,
-      $AssetsImagesSvgGen().linkedIn,
-      $AssetsImagesSvgGen().email,
-      $AssetsImagesSvgGen().whats,
-      $AssetsImagesSvgGen().cv,
+      Assets.images.svg.github,
+      Assets.images.svg.linkedIn,
+      Assets.images.svg.email,
+      Assets.images.svg.whats,
+      Assets.images.svg.cv,
     ];
+
+    if (horizontal) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: contacts
+            .map(
+              (icon) => Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                child: ContactIcon(onTap: () {}, child: icon),
+              ),
+            )
+            .toList(),
+      );
+    }
+
     return SizedBox(
       width: 75.w,
       height: 1.sh,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomPaint(painter: DashedLinePainter(), size: Size(35.w, 0.24.sh)),
+          CustomPaint(
+            painter: DashedLinePainter(),
+            size: Size(35.w, 0.24.sh),
+          ),
           10.h.verticalSpace,
           Padding(
             padding: EdgeInsetsDirectional.only(start: 35.w),
-
             child: Column(
-              children: List<Widget>.generate(
+              children: List.generate(
                 contacts.length,
-                    (index) => ContactIcon(onTap: () {}, child: contacts[index]),
+                (index) => ContactIcon(
+                  onTap: () {},
+                  child: contacts[index],
+                ),
               ),
             ),
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
+import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/features/experience/domain/entity/experience_entity.dart';
 
 class ExperienceEntry extends StatelessWidget {
@@ -61,6 +62,11 @@ class ExperienceEntry extends StatelessWidget {
                 Text(
                   entry.role,
                   style: AppTextStyle.style32Bold.copyWith(
+                    fontSize: context.responsiveSp(
+                      mobile: 22,
+                      tablet: 26,
+                      desktop: 32,
+                    ),
                     color: theme.primaryAccent,
                     height: 1.1,
                   ),
@@ -69,6 +75,11 @@ class ExperienceEntry extends StatelessWidget {
                 Text(
                   entry.context,
                   style: AppTextStyle.style16Medium.copyWith(
+                    fontSize: context.responsiveSp(
+                      mobile: 14,
+                      tablet: 15,
+                      desktop: 16,
+                    ),
                     color: theme.bodyText,
                   ),
                 ),
@@ -94,6 +105,11 @@ class ExperienceEntry extends StatelessWidget {
                           child: Text(
                             bullet,
                             style: AppTextStyle.style16Regular.copyWith(
+                              fontSize: context.responsiveSp(
+                                mobile: 14,
+                                tablet: 15,
+                                desktop: 16,
+                              ),
                               color: theme.bodyText,
                               height: 1.5,
                             ),

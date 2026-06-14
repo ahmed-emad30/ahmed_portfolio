@@ -10,16 +10,21 @@ import '../../gen/assets.gen.dart' show $AssetsImagesSvgGen;
 class ThemeToggleButton extends StatelessWidget {
   const ThemeToggleButton({
     super.key,
+    this.compact = false,
   });
+
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) {
         return Container(
-          margin: EdgeInsetsDirectional.only(end: 60.w),
-          padding: EdgeInsetsDirectional.only(top: 20.h),
-          height: 0.1.sh,
+          margin: EdgeInsetsDirectional.only(
+            end: compact ? 8.w : 60.w,
+          ),
+          padding: EdgeInsetsDirectional.only(top: compact ? 0 : 20.h),
+          height: compact ? 48.h : 0.1.sh,
           alignment: AlignmentDirectional.topEnd,
           child: Align(
             alignment: AlignmentDirectional.topEnd,
@@ -27,12 +32,12 @@ class ThemeToggleButton extends StatelessWidget {
               onTap: () => context.read<ThemeCubit>().toggleTheme(),
               child: state.isDark
                   ? $AssetsImagesSvgGen().darkMode.svg(
-                      width: 35.r,
-                      height: 35.r,
+                      width: compact ? 28.r : 35.r,
+                      height: compact ? 28.r : 35.r,
                     )
                   : $AssetsImagesSvgGen().lightMode.svg(
-                      width: 35.r,
-                      height: 35.r,
+                      width: compact ? 28.r : 35.r,
+                      height: compact ? 28.r : 35.r,
                     ),
             ),
           ),

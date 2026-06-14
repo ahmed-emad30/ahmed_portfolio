@@ -4,58 +4,137 @@ import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart'
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/utils/app_methods.dart';
 import 'package:portfolio/core/utils/portfolio_content.dart';
+import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/core/widgets/package_widgets/app_list_animate.dart';
 import 'package:portfolio/features/experience/presentation/experience_screen/ui/widgets/experience_entry.dart';
+import 'package:portfolio/features/skills/domain/entity/skill_entity.dart';
+import 'package:portfolio/features/skills/presentation/skills_screen/ui/widgets/skills_body.dart';
 
 class ExperienceBody extends StatelessWidget {
   const ExperienceBody({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
+
     return Padding(
-      padding: EdgeInsets.only(top: 100.h, bottom: 40.h),
-      child: AppListAnimate(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const ExperienceHeader(),
-          48.verticalSpace,
-          ...PortfolioContent.experiences.map(
-            (entry) => Padding(
-              padding: REdgeInsets.only(bottom: 32),
-              child: ExperienceEntry(entry: entry),
-            ),
-          ),
-        ],
+      padding: EdgeInsets.only(
+        top: context.sectionTopPadding,
+        bottom: 40.h,
+      ),
+      child: SingleChildScrollView(
+        child: AppListAnimate(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ExperienceHeader(theme: theme),
+            48.verticalSpace,
+            if (context.isMobile)
+              _ExperienceTimeline()
+            else
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: _ExperienceTimeline()),
+                  48.horizontalSpace,
+                  Expanded(
+                    child: _ExperienceSkillsPanel(
+                      category: PortfolioContent.skillCategories.last,
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class ExperienceHeader extends StatelessWidget {
-  const ExperienceHeader({super.key});
+class _ExperienceHeader extends StatelessWidget {
+  const _ExperienceHeader({required this.theme});
+
+  final PortfolioThemeExtension theme;
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.portfolioTheme;
-
-    return Stack(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Experience',
-          style: AppTextStyle.style128ExtraBold.copyWith(
-            foreground: AppMethods.textStroke(
-              color: theme.primaryAccent,
-              strokeWidth: 2,
+        if (!context.isMobile) ...[
+          Text(
+            'Explore Now!',
+            style: AppTextStyle.style40ExtraBold.copyWith(
+              color: theme.bodyText,
+              height: 0.8,
+              fontSize: context.responsiveSp(
+                mobile: 28,
+                tablet: 32,
+                desktop: 40,
+              ),
             ),
           ),
-        ),
-        Text(
-          'Experience',
-          style: AppTextStyle.style128ExtraBold.copyWith(
-            color: theme.primaryAccent,
-          ),
+          8.verticalSpace,
+        ],
+        Stack(
+          children: [
+            Text(
+              'Experience',
+              style: AppTextStyle.style128ExtraBold.copyWith(
+                fontSize: context.responsiveSp(
+                  mobile: 56,
+                  tablet: 80,
+                  desktop: 128,
+                ),
+                foreground: AppMethods.textStroke(
+                  color: theme.primaryAccent,
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
+            Text(
+              'Experience',
+              style: AppTextStyle.style128ExtraBold.copyWith(
+                fontSize: context.responsiveSp(
+                  mobile: 56,
+                  tablet: 80,
+                  desktop: 128,
+                ),
+                color: theme.primaryAccent,
+              ),
+            ),
+          ],
         ),
       ],
+    );
+  }
+}
+
+class _ExperienceTimeline extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: PortfolioContent.experiences
+          .map(
+            (entry) => Padding(
+              padding: REdgeInsets.only(bottom: 32),
+              child: ExperienceEntry(entry: entry),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _ExperienceSkillsPanel extends StatelessWidget {
+  const _ExperienceSkillsPanel({required this.category});
+
+  final SkillCategoryEntity category;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: REdgeInsets.only(top: 48),
+      child: SkillCategoryCard(category: category),
     );
   }
 }

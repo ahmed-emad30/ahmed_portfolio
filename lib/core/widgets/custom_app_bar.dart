@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
+import 'package:portfolio/core/utils/responsive_values.dart';
+import 'package:portfolio/core/widgets/portfolio_navigation_drawer.dart';
 import 'package:portfolio/core/widgets/theme_toggle_button.dart';
 import 'package:portfolio/core/widgets/top_app_navigator.dart';
 
@@ -13,17 +14,20 @@ class CustomAppBar extends StatelessWidget {
     final theme = context.portfolioTheme;
 
     return SliverAppBar(
-      backgroundColor: theme.scaffoldGradientStart,
+      backgroundColor: Colors.transparent,
+      // backgroundColor: theme.scaffoldGradientStart,
       surfaceTintColor: Colors.transparent,
       shadowColor: Colors.transparent,
       elevation: 0,
       floating: true,
       pinned: false,
+      automaticallyImplyLeading: false,
+      collapsedHeight: 80.h,
+      // automaticallyImplyActions: false,
       snap: true,
       flexibleSpace: Container(
-        height: 1.sh,
         alignment: Alignment.topCenter,
-        decoration: BoxDecoration(
+       /* decoration: BoxDecoration(
           gradient: RadialGradient(
             center: Alignment.center,
             radius: 1.2,
@@ -32,15 +36,55 @@ class CustomAppBar extends StatelessWidget {
               theme.scaffoldGradientEnd,
             ],
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            TopAppNavigator(),
-            ThemeToggleButton(),
-          ],
-        ),
+        ),*/
+        padding: EdgeInsets.only(top: 12.h),
+        child: context.useCompactNavigation
+            ? Builder(
+                builder: (context) => Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.menu, color: theme.primaryAccent),
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                    ),
+                    const Spacer(),
+                    const ThemeToggleButton(compact: true),
+                  ],
+                ),
+              )
+            : const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TopAppNavigator(),
+                  ThemeToggleButton(),
+                ],
+              ),
       ),
+    );
+  }
+}
+
+/// Registers the navigation drawer on shell scaffolds.
+class ShellScaffold extends StatelessWidget {
+  const ShellScaffold({
+    super.key,
+    required this.body,
+    this.bottomNavigationBar,
+  });
+
+  final Widget body;
+  final Widget? bottomNavigationBar;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
+
+    return Scaffold(
+      backgroundColor: theme.scaffoldGradientStart,
+      drawer: context.useCompactNavigation
+          ? const PortfolioNavigationDrawer()
+          : null,
+      bottomNavigationBar: bottomNavigationBar,
+      body: body,
     );
   }
 }

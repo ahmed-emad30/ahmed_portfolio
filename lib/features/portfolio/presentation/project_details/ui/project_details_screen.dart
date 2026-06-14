@@ -5,6 +5,7 @@ import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/utils/portfolio_content.dart';
+import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/core/widgets/app_screen_navigator.dart';
 import 'package:portfolio/core/widgets/hover_interaction.dart';
 import 'package:portfolio/core/widgets/package_widgets/app_list_animate.dart';
@@ -103,131 +104,164 @@ class ProjectDetailsBody extends StatelessWidget {
           style: AppTextStyle.style48ExtraBold.copyWith(
             color: theme.primaryAccent,
             height: 1.1,
+            fontSize: context.responsiveSp(
+              mobile: 28,
+              tablet: 36,
+              desktop: 48,
+            ),
           ),
         ),
         48.verticalSpace,
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Container(
-                height: 420.h,
-                padding: REdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.15),
-                      blurRadius: 12.r,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: project.image.image(fit: BoxFit.contain),
-              ),
-            ),
-            48.horizontalSpace,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Overview',
-                    style: AppTextStyle.style24Medium.copyWith(
-                      color: theme.primaryAccent,
-                      fontWeight: FontWeight.w700,
+        if (context.isMobile)
+          _buildContentColumn(context, theme)
+        else
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _buildMockup(context, theme)),
+              48.horizontalSpace,
+              Expanded(child: _buildDetails(context, theme)),
+            ],
+          ),
+      ],
+    );
+  }
+
+  Widget _buildContentColumn(
+    BuildContext context,
+    PortfolioThemeExtension theme,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildMockup(context, theme),
+        32.verticalSpace,
+        _buildDetails(context, theme),
+      ],
+    );
+  }
+
+  Widget _buildMockup(
+    BuildContext context,
+    PortfolioThemeExtension theme,
+  ) {
+    return Container(
+      height: context.isMobile ? 260.h : 420.h,
+      width: double.infinity,
+      padding: REdgeInsets.all(16),
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 12.r,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: project.image.image(fit: BoxFit.contain),
+    );
+  }
+
+  Widget _buildDetails(
+    BuildContext context,
+    PortfolioThemeExtension theme,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Overview',
+          style: AppTextStyle.style24Medium.copyWith(
+            color: theme.primaryAccent,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        12.verticalSpace,
+        Text(
+          project.fullDescription,
+          style: AppTextStyle.style16Regular.copyWith(
+            color: theme.bodyText,
+            height: 1.6,
+          ),
+        ),
+        28.verticalSpace,
+        Text(
+          'Tech Stack',
+          style: AppTextStyle.style16ExtraBold.copyWith(
+            color: theme.primaryAccent,
+          ),
+        ),
+        12.verticalSpace,
+        Wrap(
+          spacing: 10.w,
+          runSpacing: 10.h,
+          children: project.techStack
+              .map(
+                (tech) => Container(
+                  padding: REdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.cardBackground,
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                  child: Text(
+                    tech,
+                    style: AppTextStyle.style15Medium.copyWith(
+                      color: theme.bodyText,
                     ),
                   ),
-                  12.verticalSpace,
-                  Text(
-                    project.fullDescription,
+                ),
+              )
+              .toList(),
+        ),
+        28.verticalSpace,
+        Text(
+          'Key Features',
+          style: AppTextStyle.style16ExtraBold.copyWith(
+            color: theme.primaryAccent,
+          ),
+        ),
+        12.verticalSpace,
+        ...project.features.map(
+          (feature) => Padding(
+            padding: REdgeInsets.only(bottom: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '• ',
+                  style: AppTextStyle.style16Regular.copyWith(
+                    color: theme.primaryAccent,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    feature,
                     style: AppTextStyle.style16Regular.copyWith(
                       color: theme.bodyText,
-                      height: 1.6,
+                      height: 1.5,
                     ),
                   ),
-                  28.verticalSpace,
-                  Text(
-                    'Tech Stack',
-                    style: AppTextStyle.style16ExtraBold.copyWith(
-                      color: theme.primaryAccent,
-                    ),
-                  ),
-                  12.verticalSpace,
-                  Wrap(
-                    spacing: 10.w,
-                    runSpacing: 10.h,
-                    children: project.techStack
-                        .map(
-                          (tech) => Container(
-                            padding: REdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: theme.cardBackground,
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Text(
-                              tech,
-                              style: AppTextStyle.style15Medium.copyWith(
-                                color: theme.bodyText,
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                  28.verticalSpace,
-                  Text(
-                    'Key Features',
-                    style: AppTextStyle.style16ExtraBold.copyWith(
-                      color: theme.primaryAccent,
-                    ),
-                  ),
-                  12.verticalSpace,
-                  ...project.features.map(
-                    (feature) => Padding(
-                      padding: REdgeInsets.only(bottom: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '• ',
-                            style: AppTextStyle.style16Regular.copyWith(
-                              color: theme.primaryAccent,
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              feature,
-                              style: AppTextStyle.style16Regular.copyWith(
-                                color: theme.bodyText,
-                                height: 1.5,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  28.verticalSpace,
-                  Text(
-                    'Role',
-                    style: AppTextStyle.style16ExtraBold.copyWith(
-                      color: theme.primaryAccent,
-                    ),
-                  ),
-                  8.verticalSpace,
-                  Text(
-                    project.role,
-                    style: AppTextStyle.style16Medium.copyWith(
-                      color: theme.bodyText,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
+        ),
+        28.verticalSpace,
+        Text(
+          'Role',
+          style: AppTextStyle.style16ExtraBold.copyWith(
+            color: theme.primaryAccent,
+          ),
+        ),
+        8.verticalSpace,
+        Text(
+          project.role,
+          style: AppTextStyle.style16Medium.copyWith(
+            color: theme.bodyText,
+          ),
         ),
       ],
     );
