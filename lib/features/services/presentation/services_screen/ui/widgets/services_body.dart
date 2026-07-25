@@ -47,15 +47,17 @@ class _ServicesMobile extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               'Services',
-              style: AppTextStyle.style128ExtraBold.copyWith(
-                fontSize: context.responsiveSp(
-                  mobile: 56,
-                  tablet: 80,
-                  desktop: 128,
-                ),
-                foreground: AppMethods.textStroke(
-                  color: theme.primaryAccent,
-                  strokeWidth: 2,
+              style: AppTextStyle.style128ExtraBold.merge(
+                TextStyle(
+                  fontSize: context.responsiveSp(
+                    mobile: 56,
+                    tablet: 80,
+                    desktop: 128,
+                  ),
+                  foreground: AppMethods.textStroke(
+                    color: theme.primaryAccent,
+                    strokeWidth: 2,
+                  ),
                 ),
               ),
             ),
@@ -166,15 +168,17 @@ class _ServicesTablet extends StatelessWidget {
                   Assets.images.photos.anglePhone.image(height: 320.h),
                   Text(
                     'Services',
-                    style: AppTextStyle.style128ExtraBold.copyWith(
-                      fontSize: context.responsiveSp(
-                        mobile: 56,
-                        tablet: 80,
-                        desktop: 128,
-                      ),
-                      foreground: AppMethods.textStroke(
-                        color: theme.primaryAccent,
-                        strokeWidth: 2,
+                    style: AppTextStyle.style128ExtraBold.merge(
+                      TextStyle(
+                        fontSize: context.responsiveSp(
+                          mobile: 56,
+                          tablet: 80,
+                          desktop: 128,
+                        ),
+                        foreground: AppMethods.textStroke(
+                          color: theme.primaryAccent,
+                          strokeWidth: 2,
+                        ),
                       ),
                     ),
                   ),
@@ -274,10 +278,12 @@ class _ServicesDesktop extends StatelessWidget {
           ),
         Text(
           'Services',
-          style: AppTextStyle.style128ExtraBold.copyWith(
-            foreground: AppMethods.textStroke(
-              color: theme.primaryAccent,
-              strokeWidth: 2,
+          style: AppTextStyle.style128ExtraBold.merge(
+            TextStyle(
+              foreground: AppMethods.textStroke(
+                color: theme.primaryAccent,
+                strokeWidth: 2,
+              ),
             ),
           ),
         ),

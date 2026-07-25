@@ -24,7 +24,6 @@ class ThemeToggleButton extends StatelessWidget {
             end: compact ? 8.w : 60.w,
           ),
           padding: EdgeInsetsDirectional.only(top: compact ? 0 : 20.h),
-          height: compact ? 48.h : 0.1.sh,
           alignment: AlignmentDirectional.topEnd,
           child: Align(
             alignment: AlignmentDirectional.topEnd,

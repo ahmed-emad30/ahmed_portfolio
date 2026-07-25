@@ -79,15 +79,17 @@ class _ExperienceHeader extends StatelessWidget {
           children: [
             Text(
               'Experience',
-              style: AppTextStyle.style128ExtraBold.copyWith(
-                fontSize: context.responsiveSp(
-                  mobile: 56,
-                  tablet: 80,
-                  desktop: 128,
-                ),
-                foreground: AppMethods.textStroke(
-                  color: theme.primaryAccent,
-                  strokeWidth: 2,
+              style: AppTextStyle.style128ExtraBold.merge(
+                TextStyle(
+                  fontSize: context.responsiveSp(
+                    mobile: 56,
+                    tablet: 80,
+                    desktop: 128,
+                  ),
+                  foreground: AppMethods.textStroke(
+                    color: theme.primaryAccent,
+                    strokeWidth: 2,
+                  ),
                 ),
               ),
             ),

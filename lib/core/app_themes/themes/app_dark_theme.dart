@@ -4,7 +4,7 @@ import 'package:portfolio/core/app_themes/colors/app_colors.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/utils/app_constants.dart';
-import 'package:portfolio/core/utils/app_strings.dart';
+import 'package:portfolio/gen/fonts.gen.dart';
 
 sealed class AppDarkThemes {
   static ThemeData call() {
@@ -12,8 +12,8 @@ sealed class AppDarkThemes {
       useMaterial3: true,
       brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColors.darkScaffoldBackgroundColor,
-      fontFamily: AppStrings.enFont,
-      fontFamilyFallback: [AppStrings.arFont],
+      fontFamily: FontFamily.poppins,
+      fontFamilyFallback: const ['Cairo'],
       extensions: const [PortfolioThemeExtension.dark],
       pageTransitionsTheme: PageTransitionsTheme(
         builders: {

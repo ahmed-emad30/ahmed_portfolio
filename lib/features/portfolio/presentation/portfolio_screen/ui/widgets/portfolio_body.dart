@@ -244,18 +244,20 @@ class OutlineText extends StatelessWidget {
       maxLines: 1,
       softWrap: false,
       overflow: TextOverflow.visible,
-      style: AppTextStyle.style230ExtraBold.copyWith(
-        color: isEnabled ? null : theme.primaryAccent,
-        fontSize: fontSize,
-        height: height,
-        letterSpacing: letterSpacing,
-        textBaseline: TextBaseline.alphabetic,
-        foreground: isEnabled
-            ? AppMethods.textStroke(
-                color: theme.primaryAccent,
-                strokeWidth: strokeWidth,
-              )
-            : null,
+      style: AppTextStyle.style230ExtraBold.merge(
+        TextStyle(
+          color: isEnabled ? null : theme.primaryAccent,
+          fontSize: fontSize,
+          height: height,
+          letterSpacing: letterSpacing,
+          textBaseline: TextBaseline.alphabetic,
+          foreground: isEnabled
+              ? AppMethods.textStroke(
+                  color: theme.primaryAccent,
+                  strokeWidth: strokeWidth,
+                )
+              : null,
+        ),
       ),
     );
   }

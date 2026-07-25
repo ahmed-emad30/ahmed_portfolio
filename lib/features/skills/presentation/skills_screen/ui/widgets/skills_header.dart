@@ -21,10 +21,12 @@ class SkillsHeader extends StatelessWidget {
           children: [
             Text(
               'Skills',
-              style: AppTextStyle.style128ExtraBold.copyWith(
-                foreground: AppMethods.textStroke(
-                  color: theme.primaryAccent,
-                  strokeWidth: 2,
+              style: AppTextStyle.style128ExtraBold.merge(
+                TextStyle(
+                  foreground: AppMethods.textStroke(
+                    color: theme.primaryAccent,
+                    strokeWidth: 2,
+                  ),
                 ),
               ),
             ),

@@ -21,15 +21,17 @@ class AboutBody extends StatelessWidget {
         children: [
           Text(
             'Ahmed\nEmad.',
-            style: AppTextStyle.style96ExtraBold.copyWith(
-              fontSize: context.responsiveSp(
-                mobile: 48,
-                tablet: 72,
-                desktop: 96,
+            style: AppTextStyle.style96ExtraBold.merge(
+              TextStyle(
+                fontSize: context.responsiveSp(
+                  mobile: 48,
+                  tablet: 72,
+                  desktop: 96,
+                ),
+                height: 0.8,
+                letterSpacing: 0,
+                foreground: AppMethods.textStroke(color: theme.primaryAccent),
               ),
-              height: 0.8,
-              letterSpacing: 0,
-              foreground: AppMethods.textStroke(color: theme.primaryAccent),
             ),
           ),
           16.verticalSpace,
