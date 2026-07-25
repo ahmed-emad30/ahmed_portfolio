@@ -163,8 +163,8 @@ class _ProfileImage extends StatelessWidget {
     final image = theme.profileBlendMode == BlendMode.luminosity
         ? ColorFiltered(
             colorFilter: const ColorFilter.mode(
-              Colors.white,
-              BlendMode.luminosity,
+              Colors.grey,
+              BlendMode.color,
             ),
             child: Assets.images.photos.frontProfile.image(
               fit: BoxFit.cover,
