@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,21 +9,30 @@ import 'package:portfolio/core/app_themes/theme_logic/theme_cubit.dart';
 import 'package:portfolio/core/app_themes/themes/app_dark_theme.dart';
 import 'package:portfolio/core/app_themes/themes/app_light_theme.dart';
 import 'package:portfolio/core/utils/screen_size_utils.dart';
+import 'package:portfolio/core/utils/service_locator.dart';
 import 'package:portfolio/core/widgets/app_screen_navigator.dart';
+import 'package:portfolio/features/contact/presentation/contact_screen/logic/contact_cubit.dart';
 import 'package:portfolio/features/home/presentation/home_screen/ui/home_screen.dart'
     show HomeScreen;
 import 'package:portfolio/features/portfolio/presentation/portfolio_screen/ui/all_projects_screen.dart'
     show AllProjectsScreen;
 import 'package:portfolio/features/portfolio/presentation/project_details/ui/project_details_screen.dart'
     show ProjectDetailsScreen;
+import 'package:portfolio/features/shared/presentation/logic/portfolio_content_cubit.dart';
 
 class PortfolioApp extends StatelessWidget {
   const PortfolioApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ThemeCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(
+          create: (_) => sl<PortfolioContentCubit>()..load(),
+        ),
+        BlocProvider(create: (_) => sl<ContactCubit>()),
+      ],
       child: const _PortfolioAppView(),
     );
   }
@@ -95,8 +103,6 @@ class _PortfolioAppViewState extends State<_PortfolioAppView> {
         final sizeType = ScreenSizeUtils.getScreenSizeTypeFromWidth(width);
 
         return ScreenUtilInit(
-          // Remount when crossing mobile / tablet / desktop so spacing and
-          // type scale match the Figma mobile (375×812) artboard on web.
           key: ValueKey(sizeType),
           designSize: designSize,
           ensureScreenSize: true,
@@ -105,13 +111,31 @@ class _PortfolioAppViewState extends State<_PortfolioAppView> {
           builder: (_, child) {
             return BlocBuilder<ThemeCubit, ThemeState>(
               builder: (context, state) {
-                return MaterialApp.router(
-                  routerConfig: _router,
-                  debugShowCheckedModeBanner: false,
-                  title: 'Ahmed Emad Portfolio',
-                  theme: AppLightThemes.call(),
-                  darkTheme: AppDarkThemes.call(),
-                  themeMode: state.isDark ? ThemeMode.dark : ThemeMode.light,
+                return BlocBuilder<PortfolioContentCubit, PortfolioContentState>(
+                  builder: (context, contentState) {
+                    if (contentState is PortfolioContentLoading) {
+                      return MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        theme: AppLightThemes.call(),
+                        darkTheme: AppDarkThemes.call(),
+                        themeMode:
+                            state.isDark ? ThemeMode.dark : ThemeMode.light,
+                        home: const Scaffold(
+                          body: Center(child: CircularProgressIndicator()),
+                        ),
+                      );
+                    }
+
+                    return MaterialApp.router(
+                      routerConfig: _router,
+                      debugShowCheckedModeBanner: false,
+                      title: 'Ahmed Emad Portfolio',
+                      theme: AppLightThemes.call(),
+                      darkTheme: AppDarkThemes.call(),
+                      themeMode:
+                          state.isDark ? ThemeMode.dark : ThemeMode.light,
+                    );
+                  },
                 );
               },
             );

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
-import 'package:portfolio/core/utils/portfolio_content.dart';
+import 'package:portfolio/core/utils/project_image_resolver.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/core/widgets/app_screen_navigator.dart';
-import 'package:portfolio/core/widgets/hover_interaction.dart';
 import 'package:portfolio/core/widgets/package_widgets/app_list_animate.dart';
 import 'package:portfolio/features/portfolio/domain/entity/project_entity.dart';
-import 'package:portfolio/gen/assets.gen.dart';
+import 'package:portfolio/features/portfolio/presentation/portfolio_screen/ui/widgets/project_links_row.dart';
+import 'package:portfolio/features/shared/presentation/logic/portfolio_content_cubit.dart';
 
 class ProjectDetailsScreen extends StatelessWidget {
   const ProjectDetailsScreen({super.key, required this.projectId});
@@ -19,7 +19,8 @@ class ProjectDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final project = PortfolioContent.projectById(projectId);
+    final data = context.watch<PortfolioContentCubit>().data;
+    final project = data.projectById(projectId);
 
     if (project == null) {
       return AppScreenNavigator(
@@ -35,7 +36,7 @@ class ProjectDetailsScreen extends StatelessWidget {
       );
     }
 
-    final index = PortfolioContent.projects.indexWhere((p) => p.id == projectId);
+    final index = data.projects.indexWhere((p) => p.id == projectId);
 
     return AppScreenNavigator(
       path: Routes.projectDetailsPath(projectId),
@@ -135,7 +136,7 @@ class ProjectDetailsBody extends StatelessWidget {
           ),
         ],
       ),
-      child: project.image.image(fit: BoxFit.contain),
+      child: ProjectImageResolver.build(project, fit: BoxFit.contain),
     );
   }
 
@@ -240,6 +241,10 @@ class ProjectDetailsBody extends StatelessWidget {
             color: theme.bodyText,
           ),
         ),
+        if (project.hasAnyLink) ...[
+          28.verticalSpace,
+          ProjectLinksRow(project: project),
+        ],
       ],
     );
   }

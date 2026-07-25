@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:portfolio/core/app_themes/colors/app_colors.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/utils/app_methods.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
+import 'package:portfolio/features/shared/presentation/logic/portfolio_content_cubit.dart';
 import 'package:portfolio/gen/assets.gen.dart';
 
 class ServicesBody extends StatelessWidget {
   const ServicesBody({super.key});
 
-  static const _cards = [
-    ('Mobile App Development', 'Cross-platform Flutter apps tailored to product goals and user needs.'),
-    ('Mobile App Deployment', 'Store-ready builds for App Store, Google Play, and Huawei AppGallery.'),
-    ('Refactor & Optimisation', 'Performance tuning, clean architecture, and maintainable codebases.'),
-    ('Reskin & Redesign', 'UI refreshes that preserve brand identity while improving usability.'),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final cards = context
+        .watch<PortfolioContentCubit>()
+        .data
+        .services
+        .map((s) => (s.title, s.description))
+        .toList();
+
+    if (cards.length < 4) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     if (context.isMobile) {
-      return _ServicesMobile(cards: _cards);
+      return _ServicesMobile(cards: cards);
     }
     if (context.isTablet) {
-      return _ServicesTablet(cards: _cards);
+      return _ServicesTablet(cards: cards);
     }
-    return _ServicesDesktop(cards: _cards);
+    return _ServicesDesktop(cards: cards);
   }
 }
 

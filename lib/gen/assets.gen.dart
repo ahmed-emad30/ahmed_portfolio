@@ -148,6 +148,13 @@ class $AssetsImagesPhotosGen {
 class $AssetsImagesSvgGen {
   const $AssetsImagesSvgGen();
 
+  /// File path: assets/images/svg/apk.svg
+  SvgGenImage get apk => const SvgGenImage('assets/images/svg/apk.svg');
+
+  /// File path: assets/images/svg/app_store.svg
+  SvgGenImage get appStore =>
+      const SvgGenImage('assets/images/svg/app_store.svg');
+
   /// File path: assets/images/svg/bottom_left.svg
   SvgGenImage get bottomLeft =>
       const SvgGenImage('assets/images/svg/bottom_left.svg');
@@ -171,6 +178,10 @@ class $AssetsImagesSvgGen {
 
   /// File path: assets/images/svg/github.svg
   SvgGenImage get github => const SvgGenImage('assets/images/svg/github.svg');
+
+  /// File path: assets/images/svg/google_play.svg
+  SvgGenImage get googlePlay =>
+      const SvgGenImage('assets/images/svg/google_play.svg');
 
   /// File path: assets/images/svg/left_Arrow.svg
   SvgGenImage get leftArrow =>
@@ -199,14 +210,26 @@ class $AssetsImagesSvgGen {
   SvgGenImage get topRight =>
       const SvgGenImage('assets/images/svg/top_right.svg');
 
+  /// File path: assets/images/svg/video.svg
+  SvgGenImage get video => const SvgGenImage('assets/images/svg/video.svg');
+
+  /// File path: assets/images/svg/web.svg
+  SvgGenImage get web => const SvgGenImage('assets/images/svg/web.svg');
+
   /// File path: assets/images/svg/whats.svg
   SvgGenImage get whats => const SvgGenImage('assets/images/svg/whats.svg');
+
+  /// File path: assets/images/svg/windows.svg
+  SvgGenImage get windows =>
+      const SvgGenImage('assets/images/svg/windows.svg');
 
   /// File path: assets/images/svg/x.svg
   SvgGenImage get x => const SvgGenImage('assets/images/svg/x.svg');
 
   /// List of all assets
   List<SvgGenImage> get values => [
+    apk,
+    appStore,
     bottomLeft,
     bottomRight,
     cv,
@@ -214,6 +237,7 @@ class $AssetsImagesSvgGen {
     email,
     export,
     github,
+    googlePlay,
     leftArrow,
     lightMode,
     linkedIn,
@@ -221,7 +245,10 @@ class $AssetsImagesSvgGen {
     texture,
     topLeft,
     topRight,
+    video,
+    web,
     whats,
+    windows,
     x,
   ];
 }

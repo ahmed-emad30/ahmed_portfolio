@@ -1,12 +1,96 @@
 import 'package:portfolio/core/app_themes/colors/app_colors.dart';
 import 'package:portfolio/features/experience/domain/entity/experience_entity.dart';
 import 'package:portfolio/features/portfolio/domain/entity/project_entity.dart';
+import 'package:portfolio/features/shared/domain/entity/portfolio_data_entity.dart';
+import 'package:portfolio/features/shared/domain/entity/profile_entity.dart';
+import 'package:portfolio/features/shared/domain/entity/service_entity.dart';
+import 'package:portfolio/features/shared/domain/entity/social_link_entity.dart';
 import 'package:portfolio/features/skills/domain/entity/skill_entity.dart';
-import 'package:portfolio/gen/assets.gen.dart';
 
+/// Local fallback content used when Supabase is unreachable.
 sealed class PortfolioContent {
-  static const String skillsSubtitle =
-      'Technologies I work with daily to build polished mobile experiences.';
+  static const int projectsPerPage = 8;
+
+  static PortfolioDataEntity get fallback => PortfolioDataEntity(
+        profile: const ProfileEntity(
+          displayName: 'Ahmed Emad.',
+          title: 'Flutter Developer',
+          about:
+              '''Flutter Developer with 2+ years of experience building and publishing 15+ cross-platform mobile apps on the App Store, Google Play, and Huawei AppGallery. Skilled in Dart, Flutter, REST APIs, Firebase, and state management using Cubit. Proven ability to design responsive UIs, implement real-time features, and support localization (Arabic/English). Passionate about clean code, performance optimization, and delivering user-focused mobile experiences''',
+          aeStudioLabel: 'AE Studio',
+          aeStudioUrl: 'https://www.abdelrhman-elnhas.com',
+          resumeUrl: '',
+          skillsSubtitle:
+              'Technologies I work with daily to build polished mobile experiences.',
+        ),
+        socialLinks: const [
+          SocialLinkEntity(
+            key: 'github',
+            url: 'https://github.com/ahmed-emad30',
+            sortOrder: 1,
+            isEnabled: true,
+          ),
+          SocialLinkEntity(
+            key: 'linkedin',
+            url: 'https://www.linkedin.com/in/ahmed-emad-lotfy/',
+            sortOrder: 2,
+            isEnabled: true,
+          ),
+          SocialLinkEntity(
+            key: 'email',
+            url: 'mailto:ahmedemad0173@gmail.com',
+            sortOrder: 3,
+            isEnabled: true,
+          ),
+          SocialLinkEntity(
+            key: 'whatsapp',
+            url: 'https://wa.me/+201007344288',
+            sortOrder: 4,
+            isEnabled: true,
+          ),
+          SocialLinkEntity(
+            key: 'cv',
+            url: '',
+            sortOrder: 5,
+            isEnabled: true,
+          ),
+          SocialLinkEntity(
+            key: 'x',
+            url: 'https://x.com/Ahmed_Emad30',
+            sortOrder: 6,
+            isEnabled: true,
+          ),
+        ],
+        services: const [
+          ServiceEntity(
+            title: 'Mobile App Development',
+            description:
+                'Cross-platform Flutter apps tailored to product goals and user needs.',
+            sortOrder: 1,
+          ),
+          ServiceEntity(
+            title: 'Mobile App Deployment',
+            description:
+                'Store-ready builds for App Store, Google Play, and Huawei AppGallery.',
+            sortOrder: 2,
+          ),
+          ServiceEntity(
+            title: 'Refactor & Optimisation',
+            description:
+                'Performance tuning, clean architecture, and maintainable codebases.',
+            sortOrder: 3,
+          ),
+          ServiceEntity(
+            title: 'Reskin & Redesign',
+            description:
+                'UI refreshes that preserve brand identity while improving usability.',
+            sortOrder: 4,
+          ),
+        ],
+        skillCategories: skillCategories,
+        experiences: experiences,
+        projects: projects,
+      );
 
   static List<SkillCategoryEntity> get skillCategories => [
         SkillCategoryEntity(
@@ -69,8 +153,9 @@ sealed class PortfolioContent {
   static List<ExperienceEntity> get experiences => [
         const ExperienceEntity(
           role: 'Flutter Developer',
-          period: '2+ Years',
-          context: 'Cross-platform mobile apps · App Store · Google Play · Huawei AppGallery',
+          period: '5+ Years',
+          context:
+              'Cross-platform mobile apps · App Store · Google Play · Huawei AppGallery',
           bullets: [
             'Built and published 15+ cross-platform mobile applications.',
             'Delivered production apps across App Store, Google Play, and Huawei AppGallery.',
@@ -100,64 +185,73 @@ sealed class PortfolioContent {
       ];
 
   static List<ProjectEntity> get projects => [
-        ProjectEntity(
+        const ProjectEntity(
           id: 'taggz',
           title: 'Taggz',
           shortDescription:
               'An iOS and Android social tagging app with real-time discovery, profile flows, and polished cross-platform UI.',
           fullDescription:
               'Taggz is a cross-platform mobile application focused on social tagging and discovery. I built responsive screens, integrated REST APIs, and implemented real-time interactions with a clean Cubit-based architecture. The app supports smooth onboarding, profile management, and store-ready deployment.',
-          image: Assets.images.photos.taggz,
-          techStack: const ['Flutter', 'Dart', 'REST APIs', 'Firebase', 'Cubit'],
-          features: const [
+          imageUrl: '',
+          imageKey: 'taggz',
+          techStack: ['Flutter', 'Dart', 'REST APIs', 'Firebase', 'Cubit'],
+          features: [
             'Cross-platform iOS and Android experience',
             'Real-time social tagging and discovery flows',
             'Responsive UI with performance-focused architecture',
           ],
           role: 'Flutter Developer',
+          googlePlayUrl: 'https://play.google.com/store',
+          appStoreUrl: 'https://apps.apple.com/',
+          videoUrl: 'https://www.youtube.com/',
+          githubUrl: 'https://github.com/',
+          supportsWindows: true,
         ),
-        ProjectEntity(
+        const ProjectEntity(
           id: 'iconcierge',
           title: 'iConcierge',
           shortDescription:
               'An iOS and Android concierge platform with service booking, notifications, and localized user journeys.',
           fullDescription:
               'iConcierge connects users with concierge services through a streamlined mobile experience. I implemented booking flows, Firebase-backed notifications, and bilingual support while keeping the interface intuitive and brand-consistent across devices.',
-          image: Assets.images.photos.iconcierge,
-          techStack: const ['Flutter', 'Dart', 'REST APIs', 'Firebase', 'Cubit'],
-          features: const [
+          imageUrl: '',
+          imageKey: 'iconcierge',
+          techStack: ['Flutter', 'Dart', 'REST APIs', 'Firebase', 'Cubit'],
+          features: [
             'Service booking and request management',
             'Push notifications and backend integration',
             'Arabic and English localization support',
           ],
           role: 'Flutter Developer',
         ),
-        ProjectEntity(
+        const ProjectEntity(
           id: 'wepick',
           title: 'Wepick',
           shortDescription:
               'An iOS and Android selection platform with curated content, dynamic lists, and engaging mobile interactions.',
           fullDescription:
               'Wepick helps users browse and select curated content through a fast, responsive mobile interface. I focused on list performance, API-driven content rendering, and reusable UI components that scale across product iterations.',
-          image: Assets.images.photos.wepick,
-          techStack: const ['Flutter', 'Dart', 'REST APIs', 'Firebase', 'Cubit'],
-          features: const [
+          imageUrl: '',
+          imageKey: 'wepick',
+          techStack: ['Flutter', 'Dart', 'REST APIs', 'Firebase', 'Cubit'],
+          features: [
             'Curated content browsing and selection',
             'Optimized list rendering and API integration',
             'Modular UI components for rapid iteration',
           ],
           role: 'Flutter Developer',
         ),
-        ProjectEntity(
+        const ProjectEntity(
           id: 'all-traders',
           title: 'All Traders',
           shortDescription:
               'An iOS and Android trading companion app with market views, account flows, and secure data handling.',
           fullDescription:
               'All Traders delivers market insights and account management in a mobile-first experience. I implemented secure API communication, responsive dashboards, and performance tuning for data-heavy screens used throughout the trading journey.',
-          image: Assets.images.photos.alltraders,
-          techStack: const ['Flutter', 'Dart', 'REST APIs', 'Firebase', 'Cubit'],
-          features: const [
+          imageUrl: '',
+          imageKey: 'alltraders',
+          techStack: ['Flutter', 'Dart', 'REST APIs', 'Firebase', 'Cubit'],
+          features: [
             'Market dashboards and account management flows',
             'Secure REST API integration',
             'Performance tuning for data-heavy screens',
@@ -172,6 +266,4 @@ sealed class PortfolioContent {
     }
     return null;
   }
-
-  static const int projectsPerPage = 8;
 }

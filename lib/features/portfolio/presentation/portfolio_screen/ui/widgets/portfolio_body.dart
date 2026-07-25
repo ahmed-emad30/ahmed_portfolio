@@ -9,8 +9,9 @@ import 'package:portfolio/core/app_themes/colors/app_colors.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/utils/app_methods.dart';
-import 'package:portfolio/core/utils/portfolio_content.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
+import 'package:portfolio/features/shared/presentation/logic/portfolio_content_cubit.dart';
 import 'package:portfolio/gen/assets.gen.dart';
 
 class PortfolioBody extends StatefulWidget {
@@ -23,7 +24,12 @@ class PortfolioBody extends StatefulWidget {
 class _PortfolioBodyState extends State<PortfolioBody> {
   int _featuredIndex = 0;
 
-  final _featuredTitles = PortfolioContent.projects.map((p) => p.title).toList();
+  List<String> get _featuredTitles => context
+      .watch<PortfolioContentCubit>()
+      .data
+      .projects
+      .map((p) => p.title)
+      .toList();
 
   void _showPrevious() {
     setState(() {
@@ -41,7 +47,12 @@ class _PortfolioBodyState extends State<PortfolioBody> {
   @override
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
-    final featuredTitle = _featuredTitles[_featuredIndex].toUpperCase();
+    final titles = _featuredTitles;
+    if (titles.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    final safeIndex = _featuredIndex % titles.length;
+    final featuredTitle = titles[safeIndex].toUpperCase();
     return Padding(
       padding: EdgeInsets.only(top: context.sectionTopPadding),
       child: context.isMobile

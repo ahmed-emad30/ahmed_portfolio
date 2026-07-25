@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/utils/app_methods.dart';
-import 'package:portfolio/core/utils/portfolio_content.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/core/widgets/package_widgets/app_list_animate.dart';
+import 'package:portfolio/features/shared/presentation/logic/portfolio_content_cubit.dart';
 import 'package:portfolio/features/skills/domain/entity/skill_entity.dart';
 
 class SkillsBody extends StatelessWidget {
@@ -13,7 +14,8 @@ class SkillsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categories = PortfolioContent.skillCategories;
+    final data = context.watch<PortfolioContentCubit>().data;
+    final categories = data.skillCategories;
     final columns = context.gridColumns;
 
     final content = Padding(
@@ -24,7 +26,7 @@ class SkillsBody extends StatelessWidget {
       child: AppListAnimate(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SkillsHeader(subtitle: PortfolioContent.skillsSubtitle),
+          SkillsHeader(subtitle: data.profile.skillsSubtitle),
           40.verticalSpace,
           LayoutBuilder(
             builder: (context, constraints) {

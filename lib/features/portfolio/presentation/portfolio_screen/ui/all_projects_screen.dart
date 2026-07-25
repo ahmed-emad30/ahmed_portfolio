@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/app_routes/routes_strings.dart';
@@ -7,12 +9,16 @@ import 'package:portfolio/core/app_themes/colors/app_colors.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/utils/portfolio_content.dart';
+import 'package:portfolio/core/utils/project_image_resolver.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
+import 'package:portfolio/core/utils/url_launcher_helper.dart';
 import 'package:portfolio/core/widgets/app_screen_navigator.dart';
 import 'package:portfolio/core/widgets/hover_interaction.dart';
 import 'package:portfolio/features/portfolio/domain/entity/project_entity.dart';
 import 'package:portfolio/features/portfolio/presentation/portfolio_screen/ui/widgets/portfolio_body.dart'
     show OutlineText;
+import 'package:portfolio/features/portfolio/presentation/portfolio_screen/ui/widgets/project_links_row.dart';
+import 'package:portfolio/features/shared/presentation/logic/portfolio_content_cubit.dart';
 import 'package:portfolio/gen/assets.gen.dart';
 
 class AllProjectsScreen extends StatefulWidget {
@@ -26,17 +32,20 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> {
   int _currentPage = 0;
 
   List<ProjectEntity> get _projects {
-    final base = PortfolioContent.projects;
+    final base = context.watch<PortfolioContentCubit>().data.projects;
     return [
       ...base,
       ...base,
     ];
   }
 
-  int get _totalPages =>
-      (_projects.length / PortfolioContent.projectsPerPage).ceil();
+  int get _totalPages {
+    if (_projects.isEmpty) return 1;
+    return (_projects.length / PortfolioContent.projectsPerPage).ceil();
+  }
 
   List<ProjectEntity> get _visibleProjects {
+    if (_projects.isEmpty) return const [];
     final start = _currentPage * PortfolioContent.projectsPerPage;
     final end = (start + PortfolioContent.projectsPerPage).clamp(
       0,
@@ -88,6 +97,7 @@ class Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
+    final profile = context.watch<PortfolioContentCubit>().data.profile;
 
     return Container(
       width: 1.sw,
@@ -107,24 +117,31 @@ class Footer extends StatelessWidget {
           ),
           children: [
             TextSpan(
-              text: 'AE Studio',
+              text: profile.aeStudioLabel,
               style: AppTextStyle.style10Medium.copyWith(
                 color: theme.primaryAccent,
                 fontFamily: 'inter',
                 height: 1.0,
                 letterSpacing: 0,
+                decoration: profile.aeStudioUrl.isNotEmpty
+                    ? TextDecoration.underline
+                    : TextDecoration.none,
               ),
-              children: [
-                TextSpan(
-                  text: '. All Rights Reserved',
-                  style: AppTextStyle.style10Medium.copyWith(
-                    color: AppColors.whiteText,
-                    fontFamily: 'inter',
-                    height: 1.0,
-                    letterSpacing: 0,
-                  ),
-                ),
-              ],
+              recognizer: profile.aeStudioUrl.isNotEmpty
+                  ? (TapGestureRecognizer()
+                    ..onTap = () {
+                      UrlLauncherHelper.open(profile.aeStudioUrl);
+                    })
+                  : null,
+            ),
+            TextSpan(
+              text: '. All Rights Reserved',
+              style: AppTextStyle.style10Medium.copyWith(
+                color: AppColors.whiteText,
+                fontFamily: 'inter',
+                height: 1.0,
+                letterSpacing: 0,
+              ),
             ),
           ],
         ),
@@ -237,7 +254,7 @@ class ProjectsItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProjectCover(image: project.image, compact: true),
+            ProjectCover(project: project, compact: true),
             24.verticalSpace,
             Text(
               has2Digits ? '$index' : '0$index',
@@ -275,6 +292,10 @@ class ProjectsItem extends StatelessWidget {
                 color: theme.bodyText.withValues(alpha: 0.85),
               ),
             ),
+            if (project.hasAnyLink) ...[
+              16.verticalSpace,
+              ProjectLinksRow(project: project, compact: true),
+            ],
             20.verticalSpace,
             DetailsButton(projectId: project.id),
           ],
@@ -291,7 +312,7 @@ class ProjectsItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ProjectCover(
-            image: project.image,
+            project: project,
             compact: context.isTablet,
           ),
           SizedBox(width: context.isTablet ? 24.w : 60.w),
@@ -330,6 +351,10 @@ class ProjectsItem extends StatelessWidget {
                       color: theme.bodyText.withValues(alpha: 0.85),
                     ),
                   ),
+                  if (project.hasAnyLink) ...[
+                    16.verticalSpace,
+                    ProjectLinksRow(project: project, compact: true),
+                  ],
                   20.verticalSpace,
                   DetailsButton(projectId: project.id),
                 ],
@@ -375,11 +400,11 @@ class DetailsButton extends StatelessWidget {
 class ProjectCover extends StatelessWidget {
   const ProjectCover({
     super.key,
-    required this.image,
+    required this.project,
     this.compact = false,
   });
 
-  final AssetGenImage image;
+  final ProjectEntity project;
   final bool compact;
 
   @override
@@ -405,7 +430,13 @@ class ProjectCover extends StatelessWidget {
             offset: const Offset(0, 4),
           ),
         ],
-        image: DecorationImage(image: image.provider(), fit: BoxFit.contain),
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: ProjectImageResolver.build(
+        project,
+        fit: BoxFit.contain,
+        width: width,
+        height: height,
       ),
     );
   }

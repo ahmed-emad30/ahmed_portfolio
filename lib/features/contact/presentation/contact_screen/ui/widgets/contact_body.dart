@@ -1,10 +1,15 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:portfolio/core/app_themes/colors/app_colors.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
+import 'package:portfolio/core/utils/url_launcher_helper.dart';
+import 'package:portfolio/features/contact/presentation/contact_screen/logic/contact_cubit.dart';
+import 'package:portfolio/features/shared/presentation/logic/portfolio_content_cubit.dart';
 import 'package:portfolio/gen/assets.gen.dart';
 
 class ContactBody extends StatelessWidget {
@@ -13,95 +18,188 @@ class ContactBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-/*      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,*/
-        children: [
-          32.verticalSpace,
-          const GradientStrokeText(),
-          if (context.isMobileOrTablet)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 24.h,
-              children: const [
-                ScanQrCode(),
-                ContactFormSection(),
-              ],
-            )
-          else
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 32.w,
-              children: const [
-                Flexible(child: ScanQrCode()),
-                Expanded(child: ContactFormSection()),
-              ],
-            ),
-        ],
-      // ),
+      children: [
+        32.verticalSpace,
+        const GradientStrokeText(),
+        if (context.isMobileOrTablet)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 24.h,
+            children: const [
+              ScanQrCode(),
+              ContactFormSection(),
+            ],
+          )
+        else
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 32.w,
+            children: const [
+              Flexible(child: ScanQrCode()),
+              Expanded(child: ContactFormSection()),
+            ],
+          ),
+      ],
     );
   }
 }
 
-class ContactFormSection extends StatelessWidget {
+class ContactFormSection extends StatefulWidget {
   const ContactFormSection({super.key});
 
   @override
+  State<ContactFormSection> createState() => _ContactFormSectionState();
+}
+
+class _ContactFormSectionState extends State<ContactFormSection> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _messageController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    await context.read<ContactCubit>().submit(
+          name: _nameController.text,
+          email: _emailController.text,
+          phone: _phoneController.text,
+          message: _messageController.text,
+        );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      spacing: 20.h,
-      children: const [
-        ContactInputField(hint: 'Your Name'),
-        ContactInputField(hint: 'Email'),
-        ContactInputField(hint: 'Phone Number'),
-        ContactInputField(hint: 'How can I help?', maxLines: 7),
-        ContactActionsRow(),
-      ],
+    return BlocListener<ContactCubit, ContactState>(
+      listener: (context, state) {
+        if (state is ContactSuccessState) {
+          _nameController.clear();
+          _emailController.clear();
+          _phoneController.clear();
+          _messageController.clear();
+          Fluttertoast.showToast(msg: 'Message sent successfully');
+          context.read<ContactCubit>().reset();
+        } else if (state is ContactFailureState) {
+          Fluttertoast.showToast(msg: 'Failed to send message. Try again.');
+          context.read<ContactCubit>().reset();
+        }
+      },
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 20.h,
+          children: [
+            ContactInputField(
+              hint: 'Your Name',
+              controller: _nameController,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Name is required';
+                }
+                return null;
+              },
+            ),
+            ContactInputField(
+              hint: 'Email',
+              controller: _emailController,
+              inputType: TextInputType.emailAddress,
+              validator: (value) {
+                final email = value?.trim() ?? '';
+                if (email.isEmpty) return 'Email is required';
+                if (!email.contains('@')) return 'Enter a valid email';
+                return null;
+              },
+            ),
+            ContactInputField(
+              hint: 'Phone Number',
+              controller: _phoneController,
+              inputType: TextInputType.phone,
+            ),
+            ContactInputField(
+              hint: 'How can I help?',
+              controller: _messageController,
+              maxLines: 7,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Message is required';
+                }
+                return null;
+              },
+            ),
+            ContactActionsRow(onSend: _submit),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class ContactActionsRow extends StatelessWidget {
-  const ContactActionsRow({super.key});
+  const ContactActionsRow({super.key, required this.onSend});
+
+  final VoidCallback onSend;
 
   @override
   Widget build(BuildContext context) {
+    final data = context.watch<PortfolioContentCubit>().data;
+
+    final actions = [
+      SendMessageButton(onSend: onSend),
+      WhatsAppButton(
+        onTap: () => UrlLauncherHelper.open(data.resolveLinkUrl('whatsapp')),
+      ),
+      DashedIconButton(
+        icon: Assets.images.svg.email,
+        onTap: () => UrlLauncherHelper.open(data.resolveLinkUrl('email')),
+      ),
+      DashedIconButton(
+        icon: Assets.images.svg.linkedIn,
+        onTap: () => UrlLauncherHelper.open(data.resolveLinkUrl('linkedin')),
+      ),
+      DashedIconButton(
+        icon: Assets.images.svg.x,
+        onTap: () => UrlLauncherHelper.open(data.resolveLinkUrl('x')),
+      ),
+    ];
+
     if (context.isMobileOrTablet) {
       return Wrap(
         spacing: 12.w,
         runSpacing: 12.h,
-        children: [
-          SendMessageButton(),
-          WhatsAppButton(),
-          DashedIconButton(icon: Assets.images.svg.email),
-          DashedIconButton(icon: Assets.images.svg.linkedIn),
-          DashedIconButton(icon: Assets.images.svg.x),
-        ],
+        children: actions,
       );
     }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SendMessageButton(),
-        WhatsAppButton(),
-        DashedIconButton(icon: Assets.images.svg.email),
-        DashedIconButton(icon: Assets.images.svg.linkedIn),
-        DashedIconButton(icon: Assets.images.svg.x),
-      ],
+      children: actions,
     );
   }
 }
 
 class SendMessageButton extends StatelessWidget {
-  const SendMessageButton({super.key});
+  const SendMessageButton({super.key, required this.onSend});
+
+  final VoidCallback onSend;
 
   @override
   Widget build(BuildContext context) {
+    final isSubmitting =
+        context.watch<ContactCubit>().state is ContactSubmittingState;
+
     return GestureDetector(
-      onTap: () {},
+      onTap: isSubmitting ? null : onSend,
       child: Container(
         height: 56.dm,
         padding: EdgeInsets.symmetric(horizontal: 33.w, vertical: 18.h),
@@ -110,26 +208,37 @@ class SendMessageButton extends StatelessWidget {
           color: AppColors.primary,
           borderRadius: BorderRadius.circular(10.r),
         ),
-        child: Text(
-          'Send Message',
-          style: AppTextStyle.style16Medium.copyWith(
-            color: AppColors.whiteText,
-            height: 1.25,
-            letterSpacing: -0.32,
-          ),
-        ),
+        child: isSubmitting
+            ? SizedBox(
+                width: 20.dm,
+                height: 20.dm,
+                child: const CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppColors.white,
+                ),
+              )
+            : Text(
+                'Send Message',
+                style: AppTextStyle.style16Medium.copyWith(
+                  color: AppColors.whiteText,
+                  height: 1.25,
+                  letterSpacing: -0.32,
+                ),
+              ),
       ),
     );
   }
 }
 
 class WhatsAppButton extends StatelessWidget {
-  const WhatsAppButton({super.key});
+  const WhatsAppButton({super.key, this.onTap});
+
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         width: 56.dm,
         height: 56.dm,
@@ -187,14 +296,14 @@ class ContactInputField extends StatelessWidget {
     super.key,
     this.inputType = TextInputType.text,
     this.validator,
-    this.onChanged,
+    this.controller,
     this.maxLines,
     required this.hint,
   });
 
   final TextInputType inputType;
   final String? Function(String?)? validator;
-  final String? Function(String?)? onChanged;
+  final TextEditingController? controller;
   final int? maxLines;
   final String hint;
 
@@ -207,6 +316,7 @@ class ContactInputField extends StatelessWidget {
     );
 
     return TextFormField(
+      controller: controller,
       keyboardType: inputType,
       cursorColor: theme.primaryAccent,
       maxLines: maxLines,
@@ -216,7 +326,6 @@ class ContactInputField extends StatelessWidget {
         height: 1.25,
       ),
       validator: validator,
-      onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: AppTextStyle.style16Medium.copyWith(
@@ -227,6 +336,8 @@ class ContactInputField extends StatelessWidget {
         border: border,
         enabledBorder: border,
         focusedBorder: border,
+        errorBorder: border,
+        focusedErrorBorder: border,
       ),
     );
   }

@@ -1,11 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/utils/app_constants.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/core/widgets/theme_toggle_button.dart';
+import 'package:portfolio/features/shared/presentation/logic/portfolio_content_cubit.dart';
 import 'package:portfolio/gen/assets.gen.dart';
 
 import '../../../../../../core/app_themes/text_style/app_text_style.dart';
@@ -204,6 +206,7 @@ class _HeroContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
+    final profile = context.watch<PortfolioContentCubit>().data.profile;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,7 +219,7 @@ class _HeroContent extends StatelessWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                  'Ahmed\nEmad.',
+                  profile.displayNameWithBreak,
                   maxLines: 2,
                   minFontSize: 10,
                   style: AppTextStyle.style96ExtraBold.copyWith(
@@ -232,7 +235,7 @@ class _HeroContent extends StatelessWidget {
               ),
               Expanded(
                 child: AutoSizeText(
-                  'Flutter Developer',
+                  profile.title,
                   maxLines: 1,
                   minFontSize: 10,
                   style: AppTextStyle.style36Bold.copyWith(
