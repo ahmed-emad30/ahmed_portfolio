@@ -96,6 +96,12 @@ class _PortfolioBodyState extends State<PortfolioBody> {
     PortfolioThemeExtension theme,
     String featuredTitle,
   ) {
+    final outlineFontSize = context.responsiveSp(
+      mobile: 56,
+      tablet: 100,
+      desktop: 150,
+    );
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -113,6 +119,7 @@ class _PortfolioBodyState extends State<PortfolioBody> {
                   Expanded(
                     child: OutlineText(
                       text: featuredTitle,
+                      fontSize: outlineFontSize,
                       isEnabled: false,
                       height: 0.7,
                     ),
@@ -171,7 +178,8 @@ class _PortfolioBodyState extends State<PortfolioBody> {
                 padding: EdgeInsets.symmetric(horizontal: 70.w + 75.dm),
                 child: OutlineText(
                   text: featuredTitle,
-                  height: 40 / 230.spMin,
+                  fontSize: outlineFontSize,
+                  height: 40 / outlineFontSize,
                 ),
               ),
             ],
@@ -230,28 +238,24 @@ class OutlineText extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
 
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.center,
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        maxLines: 1,
-        softWrap: false,
-        overflow: TextOverflow.visible,
-        style: AppTextStyle.style230ExtraBold.copyWith(
-          color: isEnabled ? null : theme.primaryAccent,
-          fontSize: fontSize,
-          height: height,
-          letterSpacing: letterSpacing,
-          textBaseline: TextBaseline.alphabetic,
-          foreground: isEnabled
-              ? AppMethods.textStroke(
-                  color: theme.primaryAccent,
-                  strokeWidth: strokeWidth,
-                )
-              : null,
-        ),
+    return Text(
+      text,
+      textAlign: TextAlign.center,
+      maxLines: 1,
+      softWrap: false,
+      overflow: TextOverflow.visible,
+      style: AppTextStyle.style230ExtraBold.copyWith(
+        color: isEnabled ? null : theme.primaryAccent,
+        fontSize: fontSize,
+        height: height,
+        letterSpacing: letterSpacing,
+        textBaseline: TextBaseline.alphabetic,
+        foreground: isEnabled
+            ? AppMethods.textStroke(
+                color: theme.primaryAccent,
+                strokeWidth: strokeWidth,
+              )
+            : null,
       ),
     );
   }

@@ -68,30 +68,7 @@ class ProjectDetailsBody extends StatelessWidget {
     return AppListAnimate(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        HoverInteraction(
-          onTap: () => context.go(Routes.allProjectsScreen),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Assets.images.svg.leftArrow.svg(
-                width: 20.r,
-                height: 20.r,
-                colorFilter: ColorFilter.mode(
-                  theme.primaryAccent,
-                  BlendMode.srcIn,
-                ),
-              ),
-              8.horizontalSpace,
-              Text(
-                'Back to Projects',
-                style: AppTextStyle.style15Medium.copyWith(
-                  color: theme.primaryAccent,
-                ),
-              ),
-            ],
-          ),
-        ),
-        48.verticalSpace,
+
         Text(
           number,
           style: AppTextStyle.style48ExtraBold.copyWith(
