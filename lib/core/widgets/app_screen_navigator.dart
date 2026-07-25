@@ -40,9 +40,11 @@ class AppScreenNavigator extends StatelessWidget {
               children: [
                 _buildScrollContent(context, horizontalPadding),
                 if (context.isDesktop)
-                  Assets.images.photos.sideProfile.image(
-                    fit: BoxFit.cover,
-                    height: 1.sh,
+                  IgnorePointer(
+                    child: Assets.images.photos.sideProfile.image(
+                      fit: BoxFit.cover,
+                      height: 1.sh,
+                    ),
                   ),
               ],
             )
