@@ -9,6 +9,7 @@ import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/app_themes/theme_logic/theme_cubit.dart';
 import 'package:portfolio/core/app_themes/themes/app_dark_theme.dart';
 import 'package:portfolio/core/app_themes/themes/app_light_theme.dart';
+import 'package:portfolio/core/utils/screen_size_utils.dart';
 import 'package:portfolio/core/widgets/app_screen_navigator.dart';
 import 'package:portfolio/features/home/presentation/home_screen/ui/home_screen.dart'
     show HomeScreen;
@@ -83,21 +84,36 @@ class _PortfolioAppViewState extends State<_PortfolioAppView> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(1280, 843),
-      ensureScreenSize: true,
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (_, child) {
-        return BlocBuilder<ThemeCubit, ThemeState>(
-          builder: (context, state) {
-            return MaterialApp.router(
-              routerConfig: _router,
-              debugShowCheckedModeBanner: false,
-              title: 'Ahmed Emad Portfolio',
-              theme: AppLightThemes.call(),
-              darkTheme: AppDarkThemes.call(),
-              themeMode: state.isDark ? ThemeMode.dark : ThemeMode.light,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final view = View.of(context);
+        final fallbackWidth =
+            view.physicalSize.width / view.devicePixelRatio;
+        final width =
+            constraints.maxWidth > 0 ? constraints.maxWidth : fallbackWidth;
+        final designSize = ScreenSizeUtils.designSizeForWidth(width);
+        final sizeType = ScreenSizeUtils.getScreenSizeTypeFromWidth(width);
+
+        return ScreenUtilInit(
+          // Remount when crossing mobile / tablet / desktop so spacing and
+          // type scale match the Figma mobile (375×812) artboard on web.
+          key: ValueKey(sizeType),
+          designSize: designSize,
+          ensureScreenSize: true,
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (_, child) {
+            return BlocBuilder<ThemeCubit, ThemeState>(
+              builder: (context, state) {
+                return MaterialApp.router(
+                  routerConfig: _router,
+                  debugShowCheckedModeBanner: false,
+                  title: 'Ahmed Emad Portfolio',
+                  theme: AppLightThemes.call(),
+                  darkTheme: AppDarkThemes.call(),
+                  themeMode: state.isDark ? ThemeMode.dark : ThemeMode.light,
+                );
+              },
             );
           },
         );

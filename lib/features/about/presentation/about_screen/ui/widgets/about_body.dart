@@ -14,8 +14,11 @@ class AboutBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
 
-    return Padding(
-      padding: EdgeInsets.only(top: context.sectionTopPadding),
+    final content = Padding(
+      padding: EdgeInsets.only(
+        top: context.sectionTopPadding,
+        bottom: context.isMobile ? 24.h : 0,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -48,25 +51,31 @@ class AboutBody extends StatelessWidget {
                   tablet: 20,
                   desktop: 24,
                 ),
-                height: 26 / 24.spMin,
+                height: context.isMobile ? 1.5 : 26 / 24.spMin,
                 letterSpacing: 0,
                 color: theme.bodyText,
               ),
             ),
           ),
-        if (context.isMobileOrTablet) ...[
-          32.verticalSpace,
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12.r),
-            child: Assets.images.photos.sideProfile.image(
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: context.isTablet ? 360.h : 280.h,
+          if (context.isMobileOrTablet) ...[
+            32.verticalSpace,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.r),
+              child: Assets.images.photos.sideProfile.image(
+                fit: BoxFit.cover,
+                width: double.infinity,
+                // Keep image below the bio so it never covers copy on mobile.
+                height: context.isTablet ? 360.h : 220.h,
+              ),
             ),
-          ),
-        ],
+          ],
         ],
       ),
     );
+
+    if (context.isMobile) {
+      return SingleChildScrollView(child: content);
+    }
+    return content;
   }
 }

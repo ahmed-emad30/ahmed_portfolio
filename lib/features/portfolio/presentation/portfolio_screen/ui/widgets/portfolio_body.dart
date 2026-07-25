@@ -280,7 +280,8 @@ class NavigationIconButton extends StatelessWidget {
     final size = compact ? 52.dm : 75.dm;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: compact ? 8.w : 35.w),
+      // Flush to edges on mobile so arrows match Figma spaceBetween row.
+      padding: EdgeInsets.symmetric(horizontal: compact ? 0 : 35.w),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
@@ -290,6 +291,7 @@ class NavigationIconButton extends StatelessWidget {
             horizontal: compact ? 12.w : 16.w,
             vertical: compact ? 14.h : 21.h,
           ),
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
             color: AppColors.containerBackground,

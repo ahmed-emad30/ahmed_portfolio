@@ -5,6 +5,10 @@ import 'package:portfolio/core/utils/screen_size_utils.dart';
 export 'package:portfolio/core/utils/screen_size_utils.dart';
 
 /// Shared responsive tokens aligned with [ScreenSizeUtils] breakpoints.
+///
+/// Mobile values track the Figma 375×812 artboard. With adaptive
+/// [ScreenSizeUtils.designSizeForWidth], `.w` / `.h` / `.spMin` stay
+/// near 1:1 on a mobile-width web viewport.
 extension ResponsiveValues on BuildContext {
   double get horizontalPadding {
     if (isMobile) return 16.w;
@@ -23,7 +27,9 @@ extension ResponsiveValues on BuildContext {
     required double tablet,
     required double desktop,
   }) {
-    if (isMobile) return mobile.spMin;
+    // On mobile, prefer logical px from the 375 artboard so type does not
+    // shrink further via nested ScreenUtil font scaling.
+    if (isMobile) return mobile;
     if (isTablet) return tablet.spMin;
     return desktop.spMin;
   }

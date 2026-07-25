@@ -65,6 +65,9 @@ class AppScreenNavigator extends StatelessWidget {
             sliver: hasList
                 ? sliver
                 : SliverFillRemaining(
+                    // Allow nested scrollables (mobile ListView /
+                    // SingleChildScrollView bodies) to take over.
+                    hasScrollBody: true,
                     child: sliver,
                   ),
           ),

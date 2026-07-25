@@ -16,7 +16,7 @@ class SkillsBody extends StatelessWidget {
     final categories = PortfolioContent.skillCategories;
     final columns = context.gridColumns;
 
-    return Padding(
+    final content = Padding(
       padding: EdgeInsets.only(
         top: context.sectionTopPadding,
         bottom: 40.h,
@@ -61,6 +61,11 @@ class SkillsBody extends StatelessWidget {
         ],
       ),
     );
+
+    if (context.isMobile) {
+      return SingleChildScrollView(child: content);
+    }
+    return content;
   }
 }
 

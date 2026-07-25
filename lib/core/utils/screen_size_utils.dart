@@ -8,6 +8,23 @@ class ScreenSizeUtils {
   static const double desktopBreakpoint = 1200.0;
   static const double largeDesktopBreakpoint = 1800.0;
 
+  /// Figma mobile artboard size used when the viewport is mobile-width.
+  static const Size mobileDesignSize = Size(375, 812);
+
+  /// Tablet reference size for ScreenUtil scaling.
+  static const Size tabletDesignSize = Size(768, 1024);
+
+  /// Existing desktop design size used across the portfolio UI.
+  static const Size desktopDesignSize = Size(1280, 843);
+
+  /// Picks a ScreenUtil [designSize] so `.w` / `.h` / `.sp` match the
+  /// active layout band (especially important for mobile web at ~375px).
+  static Size designSizeForWidth(double width) {
+    if (width < mobileBreakpoint) return mobileDesignSize;
+    if (width < tabletBreakpoint) return tabletDesignSize;
+    return desktopDesignSize;
+  }
+
   /// Returns the current screen size type based on width
   static ScreenSizeType getScreenSizeType(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
