@@ -42,7 +42,6 @@ class _PortfolioBodyState extends State<PortfolioBody> {
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
     final featuredTitle = _featuredTitles[_featuredIndex].toUpperCase();
-
     return Padding(
       padding: EdgeInsets.only(top: context.sectionTopPadding),
       child: context.isMobile
@@ -168,9 +167,12 @@ class _PortfolioBodyState extends State<PortfolioBody> {
                   ),
                 ],
               ),
-              OutlineText(
-                text: featuredTitle,
-                height: 40 / 230.spMin,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 70.w + 75.dm),
+                child: OutlineText(
+                  text: featuredTitle,
+                  height: 40 / 230.spMin,
+                ),
               ),
             ],
           ),
@@ -228,21 +230,28 @@ class OutlineText extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
 
-    return Text(
-      text,
-      textAlign: TextAlign.center,
-      style: AppTextStyle.style230ExtraBold.copyWith(
-        color: isEnabled ? null : theme.primaryAccent,
-        fontSize: fontSize,
-        height: height,
-        letterSpacing: letterSpacing,
-        textBaseline: TextBaseline.alphabetic,
-        foreground: isEnabled
-            ? AppMethods.textStroke(
-                color: theme.primaryAccent,
-                strokeWidth: strokeWidth,
-              )
-            : null,
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.center,
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        maxLines: 1,
+        softWrap: false,
+        overflow: TextOverflow.visible,
+        style: AppTextStyle.style230ExtraBold.copyWith(
+          color: isEnabled ? null : theme.primaryAccent,
+          fontSize: fontSize,
+          height: height,
+          letterSpacing: letterSpacing,
+          textBaseline: TextBaseline.alphabetic,
+          foreground: isEnabled
+              ? AppMethods.textStroke(
+                  color: theme.primaryAccent,
+                  strokeWidth: strokeWidth,
+                )
+              : null,
+        ),
       ),
     );
   }
