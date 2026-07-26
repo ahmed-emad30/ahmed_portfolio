@@ -2,8 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
+import 'package:portfolio/core/navigation/section_navigation.dart';
 import 'package:portfolio/core/utils/app_constants.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/core/widgets/theme_toggle_button.dart';
@@ -254,16 +254,11 @@ class _HeroContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: List.generate(
               AppConstants.items.length,
-              (index) => navFlex
-                  ? SideMenuItem(
-                      item: AppConstants.items[index],
-                      isActive: index == 0,
-                    )
-                  : SideMenuItem(
-                      item: AppConstants.items[index],
-                      isActive: index == 0,
-                      compact: true,
-                    ),
+              (index) => SideMenuItem(
+                item: AppConstants.items[index],
+                isActive: index == 0,
+                compact: !navFlex,
+              ),
             ),
           ),
         ),
@@ -290,7 +285,7 @@ class SideMenuItem extends StatelessWidget {
     final theme = context.portfolioTheme;
 
     final content = GestureDetector(
-      onTap: () => context.go(item.route),
+      onTap: () => SectionNavigation.go(context, item.route),
       child: Padding(
         padding: REdgeInsets.symmetric(vertical: compact ? 8 : 0),
         child: Row(

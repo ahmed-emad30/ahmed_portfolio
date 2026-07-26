@@ -15,6 +15,10 @@ sealed class ProjectImageResolver {
       case 'alltraders':
       case 'all-traders':
         return Assets.images.photos.alltraders;
+      case 'portfolio1':
+        return Assets.images.photos.portfolio1;
+      case 'portfolio2':
+        return Assets.images.photos.portfolio2;
       default:
         return null;
     }
@@ -26,28 +30,67 @@ sealed class ProjectImageResolver {
     double? width,
     double? height,
   }) {
-    if (project.imageUrl.isNotEmpty) {
+    return buildFrom(
+      url: project.imageUrl,
+      key: project.imageKey,
+      fit: fit,
+      width: width,
+      height: height,
+    );
+  }
+
+  /// Portfolio hero mockups — separate from [ProjectEntity.imageUrl] cover.
+  static Widget buildPreview(
+    ProjectEntity project, {
+    required int index,
+    BoxFit fit = BoxFit.contain,
+    double? width,
+    double? height,
+  }) {
+    final useFirst = index == 1;
+    final url = useFirst ? project.previewImage1Url : project.previewImage2Url;
+    final key = useFirst ? project.previewImage1Key : project.previewImage2Key;
+    final fallbackKey = useFirst ? 'portfolio1' : 'portfolio2';
+
+    return buildFrom(
+      url: url,
+      key: ProjectEntity.hasValue(key) ? key : fallbackKey,
+      fit: fit,
+      width: width,
+      height: height,
+    );
+  }
+
+  static Widget buildFrom({
+    required String url,
+    required String key,
+    BoxFit fit = BoxFit.cover,
+    double? width,
+    double? height,
+  }) {
+    if (ProjectEntity.hasValue(url)) {
       return CachedNetworkImage(
-        imageUrl: project.imageUrl,
+        imageUrl: url.trim(),
         fit: fit,
         width: width,
         height: height,
         placeholder: (_, __) => const Center(
           child: CircularProgressIndicator(strokeWidth: 2),
         ),
-        errorWidget: (_, __, ___) => _localOrEmpty(project, fit, width, height),
+        errorWidget: (_, __, ___) =>
+            _localOrEmpty(key, fit, width, height),
       );
     }
-    return _localOrEmpty(project, fit, width, height);
+    return _localOrEmpty(key, fit, width, height);
   }
 
   static Widget _localOrEmpty(
-    ProjectEntity project,
+    String imageKey,
     BoxFit fit,
     double? width,
     double? height,
   ) {
-    final asset = localAsset(project.imageKey);
+    final asset = localAsset(imageKey);
     if (asset != null) {
       return asset.image(fit: fit, width: width, height: height);
     }

@@ -12,7 +12,9 @@ import 'core/helpers/shared_preference/preference_helper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (kIsWeb) {
+  // Hostinger: USE_PATH_URL=true (default). Supabase Storage: USE_PATH_URL=false (hash URLs).
+  const usePathUrl = bool.fromEnvironment('USE_PATH_URL', defaultValue: true);
+  if (kIsWeb && usePathUrl) {
     usePathUrlStrategy();
   }
   Bloc.observer = MyBlocObserver();

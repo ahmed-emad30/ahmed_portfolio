@@ -1,8 +1,7 @@
-import 'dart:developer' show log;
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/app_routes/routes_strings.dart';
+import 'package:portfolio/core/navigation/section_navigation.dart';
 
 import '../../features/shared/domain/entity/navigator_item_entity.dart'
     show NavigatorItemEntity;
@@ -39,8 +38,7 @@ class AppNavigatorItem extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             if (!isActive) {
-              log('current route: $location');
-              context.go(item.route);
+              SectionNavigation.go(context, item.route);
             }
           },
           child: Column(

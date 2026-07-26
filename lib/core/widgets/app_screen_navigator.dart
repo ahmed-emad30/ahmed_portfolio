@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/core/widgets/custom_app_bar.dart';
 import 'package:portfolio/core/widgets/portfolio_scaffold_background.dart';
+import 'package:portfolio/core/widgets/section_scroll_navigator.dart';
 
 import '../../features/portfolio/presentation/portfolio_screen/ui/all_projects_screen.dart'
     show Footer;
@@ -32,13 +32,13 @@ class AppScreenNavigator extends StatelessWidget {
   Widget build(BuildContext context) {
     final horizontalPadding = context.horizontalPadding;
 
-    return ShellScaffold(
+    final scaffold = ShellScaffold(
       bottomNavigationBar: _showFooter ? const Footer() : null,
       body: path == Routes.aboutScreen
           ? Stack(
               alignment: AlignmentDirectional.centerEnd,
               children: [
-                _buildScrollContent(context, horizontalPadding),
+                _buildBody(context, horizontalPadding),
                 if (context.isDesktop)
                   IgnorePointer(
                     child: Assets.images.photos.sideProfile.image(
@@ -48,28 +48,47 @@ class AppScreenNavigator extends StatelessWidget {
                   ),
               ],
             )
-          : _buildScrollContent(context, horizontalPadding),
+          : _buildBody(context, horizontalPadding),
+    );
+
+    return SectionScrollNavigator(
+      currentRoute: path ?? '',
+      child: scaffold,
     );
   }
 
-  Widget _buildScrollContent(BuildContext context, double horizontalPadding) {
+  Widget _buildBody(BuildContext context, double horizontalPadding) {
     return PortfolioScaffoldBackground(
-      child: CustomScrollView(
-        slivers: [
-          SliverPadding(
+      child: Column(
+        children: [
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            sliver: const CustomAppBar(),
+            child: const PortfolioTopBar(),
           ),
-          SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            sliver: hasList
-                ? sliver
-                : SliverFillRemaining(
-                    // Allow nested scrollables (mobile ListView /
-                    // SingleChildScrollView bodies) to take over.
-                    hasScrollBody: true,
-                    child: sliver,
-                  ),
+          Expanded(
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              slivers: [
+                hasList
+                    ? SliverPadding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
+                        ),
+                        sliver: sliver,
+                      )
+                    : SliverPadding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
+                        ),
+                        sliver: SliverFillRemaining(
+                          hasScrollBody: true,
+                          child: sliver,
+                        ),
+                      ),
+              ],
+            ),
           ),
         ],
       ),

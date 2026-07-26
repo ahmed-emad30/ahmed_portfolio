@@ -12,11 +12,10 @@ final class PortfolioContentLoading extends PortfolioContentState {
 }
 
 final class PortfolioContentLoaded extends PortfolioContentState {
-  const PortfolioContentLoaded(this.data, {this.usedFallback = false});
+  const PortfolioContentLoaded(this.data);
 
   final PortfolioDataEntity data;
-  final bool usedFallback;
 
   @override
-  List<Object?> get props => [data, usedFallback];
+  List<Object?> get props => [data];
 }

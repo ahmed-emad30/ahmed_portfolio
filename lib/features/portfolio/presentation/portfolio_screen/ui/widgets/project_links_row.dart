@@ -21,37 +21,37 @@ class ProjectLinksRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
     final items = <_ProjectLinkItem>[
-      if (project.googlePlayUrl.trim().isNotEmpty)
+      if (ProjectEntity.hasValue(project.googlePlayUrl))
         _ProjectLinkItem(
           label: 'Google Play',
           url: project.googlePlayUrl,
           icon: Assets.images.svg.googlePlay,
         ),
-      if (project.appStoreUrl.trim().isNotEmpty)
+      if (ProjectEntity.hasValue(project.appStoreUrl))
         _ProjectLinkItem(
           label: 'App Store',
           url: project.appStoreUrl,
           icon: Assets.images.svg.appStore,
         ),
-      if (project.videoUrl.trim().isNotEmpty)
+      if (ProjectEntity.hasValue(project.videoUrl))
         _ProjectLinkItem(
           label: 'Video',
           url: project.videoUrl,
           icon: Assets.images.svg.video,
         ),
-      if (project.githubUrl.trim().isNotEmpty)
+      if (ProjectEntity.hasValue(project.githubUrl))
         _ProjectLinkItem(
           label: 'GitHub',
           url: project.githubUrl,
           icon: Assets.images.svg.github,
         ),
-      if (project.apkUrl.trim().isNotEmpty)
+      if (ProjectEntity.hasValue(project.apkUrl))
         _ProjectLinkItem(
           label: 'APK',
           url: project.apkUrl,
           icon: Assets.images.svg.apk,
         ),
-      if (project.webUrl.trim().isNotEmpty)
+      if (ProjectEntity.hasValue(project.webUrl))
         _ProjectLinkItem(
           label: 'Web',
           url: project.webUrl,
@@ -143,14 +143,14 @@ class _ProjectLinkIcon extends StatelessWidget {
     );
 
     final url = item.url?.trim();
-    if (url == null || url.isEmpty) {
+    if (!ProjectEntity.hasValue(url)) {
       return child;
     }
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: HoverInteraction(
-        onTap: () => UrlLauncherHelper.open(url),
+        onTap: () => UrlLauncherHelper.open(url!),
         child: child,
       ),
     );

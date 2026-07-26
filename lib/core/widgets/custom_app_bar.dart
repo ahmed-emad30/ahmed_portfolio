@@ -6,37 +6,17 @@ import 'package:portfolio/core/widgets/portfolio_navigation_drawer.dart';
 import 'package:portfolio/core/widgets/theme_toggle_button.dart';
 import 'package:portfolio/core/widgets/top_app_navigator.dart';
 
-class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({super.key});
+/// Pinned top navigation bar (not inside the scroll view).
+class PortfolioTopBar extends StatelessWidget {
+  const PortfolioTopBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
 
-    return SliverAppBar(
-      backgroundColor: Colors.transparent,
-      // backgroundColor: theme.scaffoldGradientStart,
-      surfaceTintColor: Colors.transparent,
-      shadowColor: Colors.transparent,
-      elevation: 0,
-      floating: true,
-      pinned: false,
-      automaticallyImplyLeading: false,
-      collapsedHeight: 80.h,
-      // automaticallyImplyActions: false,
-      snap: true,
-      flexibleSpace: Container(
-        alignment: Alignment.topCenter,
-       /* decoration: BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.center,
-            radius: 1.2,
-            colors: [
-              theme.scaffoldGradientStart,
-              theme.scaffoldGradientEnd,
-            ],
-          ),
-        ),*/
+    return SizedBox(
+      height: 80.h,
+      child: Padding(
         padding: EdgeInsets.only(top: 12.h),
         child: context.useCompactNavigation
             ? Builder(

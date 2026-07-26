@@ -107,18 +107,22 @@ class SharedRemoteDataSourceImp implements SharedRemoteDataSource {
               title: row['title'] as String,
               shortDescription: row['short_description'] as String,
               fullDescription: row['full_description'] as String,
-              imageUrl: row['image_url'] as String? ?? '',
-              imageKey: row['image_key'] as String? ?? '',
+              imageUrl: _text(row['image_url']),
+              imageKey: _text(row['image_key']),
               techStack: (row['tech_stack'] as List?)?.cast<String>() ?? const [],
               features: (row['features'] as List?)?.cast<String>() ?? const [],
               role: row['role'] as String,
-              googlePlayUrl: row['google_play_url'] as String? ?? '',
-              appStoreUrl: row['app_store_url'] as String? ?? '',
-              videoUrl: row['video_url'] as String? ?? '',
-              githubUrl: row['github_url'] as String? ?? '',
-              apkUrl: row['apk_url'] as String? ?? '',
-              webUrl: row['web_url'] as String? ?? '',
+              googlePlayUrl: _text(row['google_play_url']),
+              appStoreUrl: _text(row['app_store_url']),
+              videoUrl: _text(row['video_url']),
+              githubUrl: _text(row['github_url']),
+              apkUrl: _text(row['apk_url']),
+              webUrl: _text(row['web_url']),
               supportsWindows: row['supports_windows'] as bool? ?? false,
+              previewImage1Url: _text(row['preview_image_1_url']),
+              previewImage1Key: _text(row['preview_image_1_key']),
+              previewImage2Url: _text(row['preview_image_2_url']),
+              previewImage2Key: _text(row['preview_image_2_key']),
             ),
           )
           .toList(),
@@ -130,5 +134,12 @@ class SharedRemoteDataSourceImp implements SharedRemoteDataSource {
     var value = hex.replaceFirst('#', '');
     if (value.length == 6) value = 'ff$value';
     return Color(int.parse(value, radix: 16));
+  }
+
+  String _text(dynamic value) {
+    if (value == null) return '';
+    final text = value.toString().trim();
+    if (text.isEmpty || text.toLowerCase() == 'null') return '';
+    return text;
   }
 }

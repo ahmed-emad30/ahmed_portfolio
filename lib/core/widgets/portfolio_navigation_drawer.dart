@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
+import 'package:portfolio/core/navigation/section_navigation.dart';
 import 'package:portfolio/core/utils/app_constants.dart';
 import 'package:portfolio/core/widgets/app_navigator_item.dart';
 import 'package:portfolio/core/widgets/active_line.dart';
@@ -52,7 +53,7 @@ class PortfolioNavigationDrawer extends StatelessWidget {
                       contentPadding: EdgeInsets.zero,
                       onTap: () {
                         Navigator.of(context).pop();
-                        context.go(item.route);
+                        SectionNavigation.go(context, item.route);
                       },
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

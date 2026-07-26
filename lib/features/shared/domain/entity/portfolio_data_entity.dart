@@ -15,6 +15,23 @@ class PortfolioDataEntity {
     required this.projects,
   });
 
+  static const empty = PortfolioDataEntity(
+    profile: ProfileEntity(
+      displayName: '',
+      title: '',
+      about: '',
+      aeStudioLabel: '',
+      aeStudioUrl: '',
+      resumeUrl: '',
+      skillsSubtitle: '',
+    ),
+    socialLinks: [],
+    services: [],
+    skillCategories: [],
+    experiences: [],
+    projects: [],
+  );
+
   final ProfileEntity profile;
   final List<SocialLinkEntity> socialLinks;
   final List<ServiceEntity> services;

@@ -201,11 +201,6 @@ sealed class PortfolioContent {
             'Responsive UI with performance-focused architecture',
           ],
           role: 'Flutter Developer',
-          googlePlayUrl: 'https://play.google.com/store',
-          appStoreUrl: 'https://apps.apple.com/',
-          videoUrl: 'https://www.youtube.com/',
-          githubUrl: 'https://github.com/',
-          supportsWindows: true,
         ),
         const ProjectEntity(
           id: 'iconcierge',

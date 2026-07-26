@@ -44,7 +44,7 @@ class SkillsBody extends StatelessWidget {
               }
 
               final itemWidth =
-                  (constraints.maxWidth - (columns - 1) * 16.w) / columns;
+                  ((constraints.maxWidth - (columns - 1) * 16.w) / columns) - 0.1;
 
               return Wrap(
                 spacing: 16.w,
@@ -192,10 +192,14 @@ class SkillProgressBar extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              skill.name,
-              style: AppTextStyle.style15Medium.copyWith(color: theme.bodyText),
+            Flexible(
+              child: Text(
+                skill.name,
+                style: AppTextStyle.style15Medium.copyWith(color: theme.bodyText),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
+            16.horizontalSpace,
             Text(
               '${skill.proficiency}%',
               style: AppTextStyle.style13Regular.copyWith(

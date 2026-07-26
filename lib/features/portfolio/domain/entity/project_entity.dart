@@ -16,6 +16,10 @@ class ProjectEntity {
     this.apkUrl = '',
     this.webUrl = '',
     this.supportsWindows = false,
+    this.previewImage1Url = '',
+    this.previewImage1Key = '',
+    this.previewImage2Url = '',
+    this.previewImage2Key = '',
   });
 
   final String id;
@@ -34,13 +38,26 @@ class ProjectEntity {
   final String apkUrl;
   final String webUrl;
   final bool supportsWindows;
+  /// Portfolio screen left/right mockups (not the project cover).
+  final String previewImage1Url;
+  final String previewImage1Key;
+  final String previewImage2Url;
+  final String previewImage2Key;
+
+  static bool hasValue(String? value) {
+    if (value == null) return false;
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return false;
+    if (trimmed.toLowerCase() == 'null') return false;
+    return true;
+  }
 
   bool get hasAnyLink =>
-      googlePlayUrl.trim().isNotEmpty ||
-      appStoreUrl.trim().isNotEmpty ||
-      videoUrl.trim().isNotEmpty ||
-      githubUrl.trim().isNotEmpty ||
-      apkUrl.trim().isNotEmpty ||
-      webUrl.trim().isNotEmpty ||
+      hasValue(googlePlayUrl) ||
+      hasValue(appStoreUrl) ||
+      hasValue(videoUrl) ||
+      hasValue(githubUrl) ||
+      hasValue(apkUrl) ||
+      hasValue(webUrl) ||
       supportsWindows;
 }

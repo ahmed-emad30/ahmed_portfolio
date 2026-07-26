@@ -10,7 +10,6 @@ import 'package:portfolio/core/app_themes/themes/app_dark_theme.dart';
 import 'package:portfolio/core/app_themes/themes/app_light_theme.dart';
 import 'package:portfolio/core/utils/screen_size_utils.dart';
 import 'package:portfolio/core/utils/service_locator.dart';
-import 'package:portfolio/core/widgets/app_screen_navigator.dart';
 import 'package:portfolio/features/contact/presentation/contact_screen/logic/contact_cubit.dart';
 import 'package:portfolio/features/home/presentation/home_screen/ui/home_screen.dart'
     show HomeScreen;
@@ -56,36 +55,28 @@ class _PortfolioAppViewState extends State<_PortfolioAppView> {
       routes: [
         GoRoute(
           path: Routes.homeScreen,
-          pageBuilder: (context, state) => AppTransitionPage(
+          pageBuilder: (context, state) => CurtainHomeTransitionPage(
             key: state.pageKey,
             child: const HomeScreen(),
           ),
         ),
         GoRoute(
           path: Routes.allProjectsScreen,
-          pageBuilder: (context, state) => AppTransitionPage(
+          pageBuilder: (context, state) => buildSectionPage(
             key: state.pageKey,
             child: const AllProjectsScreen(),
           ),
         ),
         GoRoute(
           path: Routes.projectDetailsRoute,
-          pageBuilder: (context, state) => AppTransitionPage(
+          pageBuilder: (context, state) => CurtainContentTransitionPage(
             key: state.pageKey,
             child: ProjectDetailsScreen(
               projectId: state.pathParameters['projectId']!,
             ),
           ),
         ),
-        ShellRoute(
-          builder: (context, state, child) {
-            return AppScreenNavigator(
-              path: state.matchedLocation,
-              sliver: child,
-            );
-          },
-          routes: AppRouter.generateRoute,
-        ),
+        ...AppRouter.sectionRoutes,
       ],
     );
   }

@@ -8,7 +8,7 @@ import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/app_themes/colors/app_colors.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
-import 'package:portfolio/core/utils/portfolio_content.dart';
+import 'package:portfolio/core/utils/app_constants.dart';
 import 'package:portfolio/core/utils/project_image_resolver.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/core/utils/url_launcher_helper.dart';
@@ -31,23 +31,18 @@ class AllProjectsScreen extends StatefulWidget {
 class _AllProjectsScreenState extends State<AllProjectsScreen> {
   int _currentPage = 0;
 
-  List<ProjectEntity> get _projects {
-    final base = context.watch<PortfolioContentCubit>().data.projects;
-    return [
-      ...base,
-      ...base,
-    ];
-  }
+  List<ProjectEntity> get _projects =>
+      context.watch<PortfolioContentCubit>().data.projects;
 
   int get _totalPages {
-    if (_projects.isEmpty) return 1;
-    return (_projects.length / PortfolioContent.projectsPerPage).ceil();
+    if (_projects.isEmpty) return 0;
+    return (_projects.length / AppConstants.projectsPerPage).ceil();
   }
 
   List<ProjectEntity> get _visibleProjects {
     if (_projects.isEmpty) return const [];
-    final start = _currentPage * PortfolioContent.projectsPerPage;
-    final end = (start + PortfolioContent.projectsPerPage).clamp(
+    final start = _currentPage * AppConstants.projectsPerPage;
+    final end = (start + AppConstants.projectsPerPage).clamp(
       0,
       _projects.length,
     );
@@ -56,17 +51,36 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final projects = _projects;
+    final visible = _visibleProjects;
+    final theme = context.portfolioTheme;
+
     return AppScreenNavigator(
       hasList: true,
       path: Routes.allProjectsScreen,
       sliver: SliverList.builder(
-        itemCount: _visibleProjects.length + 2,
+        itemCount: projects.isEmpty ? 2 : visible.length + 2,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
             return const ExploreNow();
           }
 
-          if (index == _visibleProjects.length + 1) {
+          if (projects.isEmpty) {
+            return Padding(
+              padding: REdgeInsets.only(bottom: 48.h, top: 24.h),
+              child: Text(
+                'No projects available yet.',
+                style: AppTextStyle.style16Regular.copyWith(
+                  color: theme.bodyText.withValues(alpha: 0.85),
+                ),
+              ),
+            );
+          }
+
+          if (index == visible.length + 1) {
+            if (_totalPages <= 1) {
+              return SizedBox(height: 48.h);
+            }
             return Padding(
               padding: REdgeInsets.only(bottom: 48.h),
               child: _ProjectsPagination(
@@ -77,9 +91,9 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> {
             );
           }
 
-          final project = _visibleProjects[index - 1];
+          final project = visible[index - 1];
           final globalIndex =
-              (_currentPage * PortfolioContent.projectsPerPage) + index;
+              (_currentPage * AppConstants.projectsPerPage) + index;
 
           return ProjectsItem(
             index: globalIndex,

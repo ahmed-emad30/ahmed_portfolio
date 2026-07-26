@@ -28,6 +28,10 @@ sealed class AppConstants {
 
   /// App Version
   static const String appVersion = '1.0.0';
+
+  /// Projects grid page size (All Projects screen).
+  static const int projectsPerPage = 8;
+
   static final List<NavigatorItemEntity> items=[
     NavigatorItemEntity(title: 'Home', route:Routes.homeScreen),
     NavigatorItemEntity(title: 'About', route:Routes.aboutScreen),

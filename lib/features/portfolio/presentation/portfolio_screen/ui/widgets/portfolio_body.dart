@@ -3,14 +3,16 @@ import 'dart:math' as math;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/app_themes/colors/app_colors.dart';
 import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
+import 'package:portfolio/core/navigation/section_navigation.dart';
 import 'package:portfolio/core/utils/app_methods.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/core/utils/project_image_resolver.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
+import 'package:portfolio/features/portfolio/domain/entity/project_entity.dart';
 import 'package:portfolio/features/shared/presentation/logic/portfolio_content_cubit.dart';
 import 'package:portfolio/gen/assets.gen.dart';
 
@@ -24,40 +26,52 @@ class PortfolioBody extends StatefulWidget {
 class _PortfolioBodyState extends State<PortfolioBody> {
   int _featuredIndex = 0;
 
-  List<String> get _featuredTitles => context
-      .watch<PortfolioContentCubit>()
-      .data
-      .projects
-      .map((p) => p.title)
-      .toList();
+  List<ProjectEntity> get _projects =>
+      context.watch<PortfolioContentCubit>().data.projects;
 
   void _showPrevious() {
+    final projects = _projects;
+    if (projects.isEmpty) return;
     setState(() {
       _featuredIndex =
-          (_featuredIndex - 1 + _featuredTitles.length) % _featuredTitles.length;
+          (_featuredIndex - 1 + projects.length) % projects.length;
     });
   }
 
   void _showNext() {
+    final projects = _projects;
+    if (projects.isEmpty) return;
     setState(() {
-      _featuredIndex = (_featuredIndex + 1) % _featuredTitles.length;
+      _featuredIndex = (_featuredIndex + 1) % projects.length;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
-    final titles = _featuredTitles;
-    if (titles.isEmpty) {
-      return const SizedBox.shrink();
+    final projects = _projects;
+    if (projects.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.only(top: context.sectionTopPadding),
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: Text(
+            'No projects available yet.',
+            style: AppTextStyle.style16Regular.copyWith(
+              color: theme.bodyText.withValues(alpha: 0.85),
+            ),
+          ),
+        ),
+      );
     }
-    final safeIndex = _featuredIndex % titles.length;
-    final featuredTitle = titles[safeIndex].toUpperCase();
+    final safeIndex = _featuredIndex % projects.length;
+    final featured = projects[safeIndex];
+    final featuredTitle = featured.title.toUpperCase();
     return Padding(
       padding: EdgeInsets.only(top: context.sectionTopPadding),
       child: context.isMobile
-          ? _buildMobile(context, theme, featuredTitle)
-          : _buildDesktop(context, theme, featuredTitle),
+          ? _buildMobile(context, theme, featuredTitle, featured)
+          : _buildDesktop(context, theme, featuredTitle, featured),
     );
   }
 
@@ -65,6 +79,7 @@ class _PortfolioBodyState extends State<PortfolioBody> {
     BuildContext context,
     PortfolioThemeExtension theme,
     String featuredTitle,
+    ProjectEntity featured,
   ) {
     return SingleChildScrollView(
       child: Column(
@@ -94,7 +109,11 @@ class _PortfolioBodyState extends State<PortfolioBody> {
             ),
           ),
           24.verticalSpace,
-          Assets.images.photos.portfolio2.image(height: 280.h),
+          ProjectImageResolver.buildPreview(
+            featured,
+            index: 2,
+            height: 280.h,
+          ),
           24.verticalSpace,
           _exploreButton(context, theme),
         ],
@@ -106,6 +125,7 @@ class _PortfolioBodyState extends State<PortfolioBody> {
     BuildContext context,
     PortfolioThemeExtension theme,
     String featuredTitle,
+    ProjectEntity featured,
   ) {
     final outlineFontSize = context.responsiveSp(
       mobile: 56,
@@ -168,7 +188,9 @@ class _PortfolioBodyState extends State<PortfolioBody> {
                           left: context.isTablet ? 0.12.sw : 0.175.sw,
                           bottom: 40,
                         ),
-                        child: Assets.images.photos.portfolio1.image(
+                        child: ProjectImageResolver.buildPreview(
+                          featured,
+                          index: 1,
                           height: context.isTablet ? 0.5.sh : 0.62.sh,
                         ),
                       ),
@@ -177,7 +199,9 @@ class _PortfolioBodyState extends State<PortfolioBody> {
                           left: context.isTablet ? 0.06.sw : 0.088.sw,
                           bottom: 0.13.sh,
                         ),
-                        child: Assets.images.photos.portfolio2.image(
+                        child: ProjectImageResolver.buildPreview(
+                          featured,
+                          index: 2,
                           height: context.isTablet ? 0.48.sh : 0.59.sh,
                         ),
                       ),
@@ -203,7 +227,7 @@ class _PortfolioBodyState extends State<PortfolioBody> {
 
   Widget _exploreButton(BuildContext context, PortfolioThemeExtension theme) {
     return GestureDetector(
-      onTap: () => context.go(Routes.allProjectsScreen),
+      onTap: () => SectionNavigation.go(context, Routes.allProjectsScreen),
       child: Padding(
         padding: REdgeInsets.only(bottom: 32),
         child: DottedBorder(
