@@ -177,6 +177,7 @@ class ContactActionsRow extends StatelessWidget {
       return Wrap(
         spacing: 12.w,
         runSpacing: 12.h,
+        alignment: WrapAlignment.center,
         children: actions,
       );
     }

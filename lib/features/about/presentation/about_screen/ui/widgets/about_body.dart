@@ -59,7 +59,7 @@ class AboutBody extends StatelessWidget {
               ),
             ),
           ),
-          if (context.isMobileOrTablet) ...[
+        /*  if (context.isMobileOrTablet) ...[
             32.verticalSpace,
             ClipRRect(
               borderRadius: BorderRadius.circular(12.r),
@@ -70,7 +70,7 @@ class AboutBody extends StatelessWidget {
                 height: context.isTablet ? 360.h : 220.h,
               ),
             ),
-          ],
+          ],*/
         ],
       ),
     );
