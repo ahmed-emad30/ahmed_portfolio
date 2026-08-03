@@ -138,7 +138,8 @@ class _ContactFormSectionState extends State<ContactFormSection> {
                 return null;
               },
             ),
-            ContactActionsRow(onSend: _submit),
+            SendMessageButton(onSend: _submit),
+            const ContactSocialsRow(),
           ],
         ),
       ),
@@ -146,17 +147,14 @@ class _ContactFormSectionState extends State<ContactFormSection> {
   }
 }
 
-class ContactActionsRow extends StatelessWidget {
-  const ContactActionsRow({super.key, required this.onSend});
-
-  final VoidCallback onSend;
+class ContactSocialsRow extends StatelessWidget {
+  const ContactSocialsRow({super.key});
 
   @override
   Widget build(BuildContext context) {
     final data = context.watch<PortfolioContentCubit>().data;
 
     final actions = [
-      SendMessageButton(onSend: onSend),
       WhatsAppButton(
         onTap: () => UrlLauncherHelper.open(data.resolveLinkUrl('whatsapp')),
       ),
@@ -184,7 +182,8 @@ class ContactActionsRow extends StatelessWidget {
     }
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 12.w,
       children: actions,
     );
   }
@@ -203,6 +202,7 @@ class SendMessageButton extends StatelessWidget {
     return GestureDetector(
       onTap: isSubmitting ? null : onSend,
       child: Container(
+        width: double.infinity,
         height: 35.dm,
         padding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 9.h),
         alignment: Alignment.center,

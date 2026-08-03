@@ -143,15 +143,18 @@ class SkillCategoryCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: REdgeInsets.symmetric(horizontal: 24, vertical: 28),
+      padding: REdgeInsets.symmetric(horizontal: 22, vertical: 24),
       decoration: BoxDecoration(
         color: theme.cardBackground,
         borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(
+          color: theme.bodyText.withValues(alpha: 0.06),
+        ),
         boxShadow: [
           BoxShadow(
-            color: theme.bodyText.withValues(alpha: 0.15),
-            offset: const Offset(0, 2),
-            blurRadius: 22,
+            color: theme.bodyText.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 18,
           ),
         ],
       ),
@@ -162,14 +165,16 @@ class SkillCategoryCard extends StatelessWidget {
             category.title,
             style: AppTextStyle.style16ExtraBold.copyWith(
               color: theme.primaryAccent,
+              height: 1.2,
             ),
           ),
-          16.verticalSpace,
-          ...category.skills.map(
-            (skill) => Padding(
-              padding: REdgeInsets.only(bottom: 14),
-              child: SkillProgressBar(skill: skill),
-            ),
+          18.verticalSpace,
+          Wrap(
+            spacing: 10.w,
+            runSpacing: 10.h,
+            children: category.skills
+                .map((skill) => SkillChip(skill: skill))
+                .toList(),
           ),
         ],
       ),
@@ -177,8 +182,8 @@ class SkillCategoryCard extends StatelessWidget {
   }
 }
 
-class SkillProgressBar extends StatelessWidget {
-  const SkillProgressBar({super.key, required this.skill});
+class SkillChip extends StatelessWidget {
+  const SkillChip({super.key, required this.skill});
 
   final SkillEntity skill;
 
@@ -186,39 +191,22 @@ class SkillProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Text(
-                skill.name,
-                style: AppTextStyle.style15Medium.copyWith(color: theme.bodyText),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            16.horizontalSpace,
-            Text(
-              '${skill.proficiency}%',
-              style: AppTextStyle.style13Regular.copyWith(
-                color: theme.primaryAccent,
-              ),
-            ),
-          ],
+    return Container(
+      padding: REdgeInsets.symmetric(horizontal: 14, vertical: 9),
+      decoration: BoxDecoration(
+        color: theme.primaryAccent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(
+          color: theme.primaryAccent.withValues(alpha: 0.16),
         ),
-        8.verticalSpace,
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4.r),
-          child: LinearProgressIndicator(
-            value: skill.proficiency / 100,
-            minHeight: 8.h,
-            backgroundColor: theme.bodyText.withValues(alpha: 0.15),
-            valueColor: AlwaysStoppedAnimation<Color>(skill.color),
-          ),
+      ),
+      child: Text(
+        skill.name,
+        style: AppTextStyle.style15Medium.copyWith(
+          color: theme.bodyText,
+          height: 1.2,
         ),
-      ],
+      ),
     );
   }
 }
