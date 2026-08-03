@@ -32,28 +32,8 @@ class ExperienceBody extends StatelessWidget {
           children: [
             _ExperienceHeader(theme: theme),
             48.verticalSpace,
-            if (context.isMobile)
               _ExperienceTimeline(experiences: data.experiences)
-            else
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _ExperienceTimeline(experiences: data.experiences),
-                  ),
-                  48.horizontalSpace,
-                  Expanded(
-                    child: _ExperienceSkillsPanel(
-                      category: skillCategories.isNotEmpty
-                          ? skillCategories.last
-                          : const SkillCategoryEntity(
-                              title: '',
-                              skills: [],
-                            ),
-                    ),
-                  ),
-                ],
-              ),
+
           ],
         ),
       ),

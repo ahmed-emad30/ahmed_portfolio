@@ -115,7 +115,7 @@ class Footer extends StatelessWidget {
 
     return Container(
       width: 1.sw,
-      height: 60.h,
+      height: 30.h,
       alignment: Alignment.center,
       color: theme.footerBackground,
       child: RichText(
@@ -319,7 +319,9 @@ class ProjectsItem extends StatelessWidget {
 
     return Container(
       width: 1.sw,
-      height: context.isTablet ? null : 343.4.h,
+      constraints: BoxConstraints(
+        minHeight: context.isTablet ? 0 : 343.4.h,
+      ),
       margin: REdgeInsets.only(bottom: context.isTablet ? 56.h : 80.h),
       child: Row(
         textDirection: isOdd ? TextDirection.ltr : TextDirection.rtl,

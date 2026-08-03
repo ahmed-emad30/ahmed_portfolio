@@ -100,6 +100,7 @@ class _ContactFormSectionState extends State<ContactFormSection> {
           mainAxisSize: MainAxisSize.min,
           spacing: 20.h,
           children: [
+            16.verticalSpace,
             ContactInputField(
               hint: 'Your Name',
               controller: _nameController,
@@ -202,8 +203,8 @@ class SendMessageButton extends StatelessWidget {
     return GestureDetector(
       onTap: isSubmitting ? null : onSend,
       child: Container(
-        height: 56.dm,
-        padding: EdgeInsets.symmetric(horizontal: 33.w, vertical: 18.h),
+        height: 35.dm,
+        padding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 9.h),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: AppColors.primary,
@@ -241,8 +242,8 @@ class WhatsAppButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 56.dm,
-        height: 56.dm,
+        width: 35.dm,
+        height: 35.dm,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: AppColors.primary,
@@ -282,8 +283,8 @@ class DashedIconButton extends StatelessWidget {
         padding: EdgeInsets.zero,
         borderPadding: EdgeInsets.zero,
         child: Container(
-          width: 56.dm,
-          height: 56.dm,
+          width: 35.dm,
+          height: 35.dm,
           alignment: Alignment.center,
           child: icon.svg(width: 20.dm, height: 20.dm),
         ),
@@ -391,7 +392,7 @@ class GradientStrokeText extends StatelessWidget {
           fontSize: context.responsiveSp(
             mobile: 48,
             tablet: 96,
-            desktop: 154,
+            desktop: 100,
           ),
           height: 0.8,
           foreground: Paint()

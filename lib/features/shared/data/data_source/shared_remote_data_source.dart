@@ -26,7 +26,7 @@ class SharedRemoteDataSourceImp implements SharedRemoteDataSource {
       _client.from('skill_categories').select().order('sort_order'),
       _client.from('skills').select().order('sort_order'),
       _client.from('experiences').select().order('sort_order'),
-      _client.from('projects').select().order('sort_order'),
+      _client.from('projects').select().order('sort_order',ascending: true),
     ]);
 
     final profileRow = results[0] as Map<String, dynamic>?;

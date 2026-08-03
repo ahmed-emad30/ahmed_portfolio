@@ -30,10 +30,10 @@ class PortfolioScaffoldBackground extends StatelessWidget {
         image: DecorationImage(
           image: Assets.images.photos.texture.provider(),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
+         /* colorFilter: ColorFilter.mode(
             AppColorsTextureFilter.color(context),
             BlendMode.srcIn,
-          ),
+          ),*/
         ),
       ),
       child: child,

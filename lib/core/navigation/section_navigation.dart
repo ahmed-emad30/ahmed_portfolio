@@ -3,8 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/utils/app_constants.dart';
 
-/// Tracks the active navigation so page transitions can choose curtain vs
-/// vertical scroll, and so edge-scroll can skip Home.
+/// Tracks navigation direction for vertical scroll transitions and edge-scroll.
 class SectionNavigation {
   SectionNavigation._();
 
@@ -17,12 +16,6 @@ class SectionNavigation {
       .map((item) => item.route)
       .where((route) => route != Routes.homeScreen)
       .toList(growable: false);
-
-  static bool involvesHome(String from, String to) {
-    return from == Routes.homeScreen || to == Routes.homeScreen;
-  }
-
-  static bool get currentInvolvesHome => involvesHome(fromRoute, toRoute);
 
   static bool isScrollableSection(String route) {
     return scrollableRoutes.contains(route);

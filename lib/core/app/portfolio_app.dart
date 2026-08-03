@@ -55,7 +55,7 @@ class _PortfolioAppViewState extends State<_PortfolioAppView> {
       routes: [
         GoRoute(
           path: Routes.homeScreen,
-          pageBuilder: (context, state) => CurtainHomeTransitionPage(
+          pageBuilder: (context, state) => buildSectionPage(
             key: state.pageKey,
             child: const HomeScreen(),
           ),
@@ -69,7 +69,7 @@ class _PortfolioAppViewState extends State<_PortfolioAppView> {
         ),
         GoRoute(
           path: Routes.projectDetailsRoute,
-          pageBuilder: (context, state) => CurtainContentTransitionPage(
+          pageBuilder: (context, state) => buildSectionPage(
             key: state.pageKey,
             child: ProjectDetailsScreen(
               projectId: state.pathParameters['projectId']!,
