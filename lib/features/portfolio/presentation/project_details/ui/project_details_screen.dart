@@ -126,12 +126,14 @@ class ProjectDetailsBody extends StatelessWidget {
     return Container(
       height: context.isMobile ? 260.h : 420.h,
       width: double.infinity,
-      padding: REdgeInsets.all(16),
+      padding: EdgeInsets.zero,
+      margin: REdgeInsets.all(16),
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 12.r,
+            spreadRadius: 0,
             offset: const Offset(0, 4),
           ),
         ],
