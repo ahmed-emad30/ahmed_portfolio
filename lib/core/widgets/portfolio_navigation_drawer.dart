@@ -53,7 +53,11 @@ class PortfolioNavigationDrawer extends StatelessWidget {
                       contentPadding: EdgeInsets.zero,
                       onTap: () {
                         Navigator.of(context).pop();
-                        SectionNavigation.go(context, item.route);
+                        final location = router.state.matchedLocation;
+                        // Always allow Portfolio tap from all-projects / details.
+                        if (location != item.route) {
+                          SectionNavigation.go(context, item.route);
+                        }
                       },
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

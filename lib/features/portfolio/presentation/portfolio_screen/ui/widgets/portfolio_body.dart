@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/app_themes/colors/app_colors.dart';
@@ -9,7 +10,6 @@ import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart'
 import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/navigation/section_navigation.dart';
 import 'package:portfolio/core/utils/app_methods.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/core/utils/project_image_resolver.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/features/portfolio/domain/entity/project_entity.dart';
@@ -26,12 +26,17 @@ class PortfolioBody extends StatefulWidget {
 class _PortfolioBodyState extends State<PortfolioBody> {
   int _featuredIndex = 0;
 
-  List<ProjectEntity> get _projects =>
-      context.watch<PortfolioContentCubit>().data.projects;
+  /// Portfolio carousel only includes projects with preview mockups.
+  List<ProjectEntity> _featuredProjectsOf(BuildContext context) => context
+      .read<PortfolioContentCubit>()
+      .data
+      .projects
+      .where((project) => project.hasPreviewImages)
+      .toList(growable: false);
 
   void _showPrevious() {
-    final projects = _projects;
-    if (projects.isEmpty) return;
+    final projects = _featuredProjectsOf(context);
+    if (projects.length <= 1) return;
     setState(() {
       _featuredIndex =
           (_featuredIndex - 1 + projects.length) % projects.length;
@@ -39,8 +44,8 @@ class _PortfolioBodyState extends State<PortfolioBody> {
   }
 
   void _showNext() {
-    final projects = _projects;
-    if (projects.isEmpty) return;
+    final projects = _featuredProjectsOf(context);
+    if (projects.length <= 1) return;
     setState(() {
       _featuredIndex = (_featuredIndex + 1) % projects.length;
     });
@@ -49,7 +54,12 @@ class _PortfolioBodyState extends State<PortfolioBody> {
   @override
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
-    final projects = _projects;
+    final projects = context
+        .watch<PortfolioContentCubit>()
+        .data
+        .projects
+        .where((project) => project.hasPreviewImages)
+        .toList(growable: false);
     if (projects.isEmpty) {
       return Padding(
         padding: EdgeInsets.only(top: context.sectionTopPadding),
@@ -64,14 +74,35 @@ class _PortfolioBodyState extends State<PortfolioBody> {
         ),
       );
     }
-    final safeIndex = _featuredIndex % projects.length;
+
+    final safeIndex = _featuredIndex.clamp(0, projects.length - 1);
+    if (safeIndex != _featuredIndex) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _featuredIndex = safeIndex);
+      });
+    }
+
     final featured = projects[safeIndex];
     final featuredTitle = featured.title.toUpperCase();
+    final showArrows = projects.length > 1;
+
     return Padding(
       padding: EdgeInsets.only(top: context.sectionTopPadding),
       child: context.isMobile
-          ? _buildMobile(context, theme, featuredTitle, featured)
-          : _buildDesktop(context, theme, featuredTitle, featured),
+          ? _buildMobile(
+              context,
+              theme,
+              featuredTitle,
+              featured,
+              showArrows: showArrows,
+            )
+          : _buildDesktop(
+              context,
+              theme,
+              featuredTitle,
+              featured,
+              showArrows: showArrows,
+            ),
     );
   }
 
@@ -79,40 +110,65 @@ class _PortfolioBodyState extends State<PortfolioBody> {
     BuildContext context,
     PortfolioThemeExtension theme,
     String featuredTitle,
-    ProjectEntity featured,
-  ) {
+    ProjectEntity featured, {
+    required bool showArrows,
+  }) {
+    final outlineFontSize = context.responsiveSp(
+      mobile: 56,
+      tablet: 120,
+      desktop: 230,
+    );
+    // Fixed slots so switching projects does not shift the layout vertically.
+    final titleSlotHeight = 64.h;
+    final imageSlotHeight = 280.h;
+
     return SingleChildScrollView(
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              NavigationIconButton(
-                icon: Assets.images.svg.leftArrow.svg(),
-                onTap: _showPrevious,
-                compact: true,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            child: SizedBox(
+              width: double.infinity,
+              height: titleSlotHeight,
+              child: FittedBox(
+                fit: BoxFit.contain,
+                alignment: Alignment.center,
+                child: OutlineText(
+                  text: featuredTitle,
+                  fontSize: outlineFontSize,
+                  height: 1,
+                ),
               ),
-              NavigationIconButton(
-                icon: Assets.images.svg.rightArrow.svg(),
-                onTap: _showNext,
-                compact: true,
-              ),
-            ],
-          ),
-          16.verticalSpace,
-          OutlineText(
-            text: featuredTitle,
-            fontSize: context.responsiveSp(
-              mobile: 56,
-              tablet: 120,
-              desktop: 230,
             ),
           ),
           24.verticalSpace,
-          ProjectImageResolver.buildPreview(
-            featured,
-            index: 2,
-            height: 280.h,
+          SizedBox(
+            height: imageSlotHeight,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (showArrows)
+                  NavigationIconButton(
+                    icon: Assets.images.svg.leftArrow.svg(),
+                    onTap: _showPrevious,
+                    compact: true,
+                  ),
+                Expanded(
+                  child: ProjectImageResolver.build(
+                    featured,
+                    fit: BoxFit.contain,
+                    width: double.infinity,
+                    height: imageSlotHeight,
+                  ),
+                ),
+                if (showArrows)
+                  NavigationIconButton(
+                    icon: Assets.images.svg.rightArrow.svg(),
+                    onTap: _showNext,
+                    compact: true,
+                  ),
+              ],
+            ),
           ),
           24.verticalSpace,
           _exploreButton(context, theme),
@@ -125,13 +181,15 @@ class _PortfolioBodyState extends State<PortfolioBody> {
     BuildContext context,
     PortfolioThemeExtension theme,
     String featuredTitle,
-    ProjectEntity featured,
-  ) {
+    ProjectEntity featured, {
+    required bool showArrows,
+  }) {
     final outlineFontSize = context.responsiveSp(
       mobile: 56,
       tablet: 100,
       desktop: 150,
     );
+    final sideInset = showArrows ? 70.w + 75.dm : 24.w;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -140,83 +198,92 @@ class _PortfolioBodyState extends State<PortfolioBody> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  NavigationIconButton(
-                    icon: Assets.images.svg.leftArrow.svg(),
-                    onTap: _showPrevious,
-                  ),
-                  Expanded(
-                    child: OutlineText(
+              // Decorative layers must not steal arrow taps.
+              IgnorePointer(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    OutlineText(
                       text: featuredTitle,
                       fontSize: outlineFontSize,
                       isEnabled: false,
                       height: 0.7,
                     ),
-                  ),
-                  NavigationIconButton(
-                    icon: Assets.images.svg.rightArrow.svg(),
-                    onTap: _showNext,
-                  ),
-                ],
-              ),
-              Stack(
-                alignment: const Alignment(0, 0.7),
-                children: [
-                  Container(
-                    width: context.isTablet ? 220.w : 290.w,
-                    height: 80.h,
-                    alignment: Alignment.bottomCenter,
-                    transform: Matrix4.rotationZ(13.24 * math.pi / 180),
-                    transformAlignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40.h),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.shadow,
-                          blurRadius: 78,
+                    Stack(
+                      alignment: const Alignment(0, 0.7),
+                      children: [
+                        Container(
+                          width: context.isTablet ? 220.w : 290.w,
+                          height: 80.h,
+                          alignment: Alignment.bottomCenter,
+                          transform:
+                              Matrix4.rotationZ(13.24 * math.pi / 180),
+                          transformAlignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40.h),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.shadow,
+                                blurRadius: 78,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Stack(
+                          alignment: const Alignment(-2.5, 0),
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: context.isTablet ? 0.12.sw : 0.175.sw,
+                                bottom: 40,
+                              ),
+                              child: ProjectImageResolver.buildPreview(
+                                featured,
+                                index: 1,
+                                height: context.isTablet ? 0.5.sh : 0.62.sh,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: context.isTablet ? 0.06.sw : 0.088.sw,
+                                bottom: 0.13.sh,
+                              ),
+                              child: ProjectImageResolver.buildPreview(
+                                featured,
+                                index: 2,
+                                height: context.isTablet ? 0.48.sh : 0.59.sh,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ),
-                  Stack(
-                    alignment: const Alignment(-2.5, 0),
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: context.isTablet ? 0.12.sw : 0.175.sw,
-                          bottom: 40,
-                        ),
-                        child: ProjectImageResolver.buildPreview(
-                          featured,
-                          index: 1,
-                          height: context.isTablet ? 0.5.sh : 0.62.sh,
-                        ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: sideInset),
+                      child: OutlineText(
+                        text: featuredTitle,
+                        fontSize: outlineFontSize,
+                        height: 40 / outlineFontSize,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: context.isTablet ? 0.06.sw : 0.088.sw,
-                          bottom: 0.13.sh,
-                        ),
-                        child: ProjectImageResolver.buildPreview(
-                          featured,
-                          index: 2,
-                          height: context.isTablet ? 0.48.sh : 0.59.sh,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 70.w + 75.dm),
-                child: OutlineText(
-                  text: featuredTitle,
-                  fontSize: outlineFontSize,
-                  height: 40 / outlineFontSize,
+                    ),
+                  ],
                 ),
               ),
+              if (showArrows)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    NavigationIconButton(
+                      icon: Assets.images.svg.leftArrow.svg(),
+                      onTap: _showPrevious,
+                    ),
+                    const Spacer(),
+                    NavigationIconButton(
+                      icon: Assets.images.svg.rightArrow.svg(),
+                      onTap: _showNext,
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -315,23 +382,27 @@ class NavigationIconButton extends StatelessWidget {
     final size = compact ? 52.dm : 75.dm;
 
     return Padding(
-      // Flush to edges on mobile so arrows match Figma spaceBetween row.
-      padding: EdgeInsets.symmetric(horizontal: compact ? 0 : 35.w),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: size,
-          height: size,
-          padding: EdgeInsets.symmetric(
-            horizontal: compact ? 12.w : 16.w,
-            vertical: compact ? 14.h : 21.h,
+      padding: EdgeInsets.symmetric(horizontal: compact ? 4.w : 35.w),
+      child: Material(
+        color: AppColors.containerBackground,
+        borderRadius: BorderRadius.circular(10.r),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10.r),
+          child: SizedBox(
+            width: size,
+            height: size,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: compact ? 12.w : 16.w,
+                vertical: compact ? 14.h : 21.h,
+              ),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: icon,
+              ),
+            ),
           ),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.r),
-            color: AppColors.containerBackground,
-          ),
-          child: icon,
         ),
       ),
     );

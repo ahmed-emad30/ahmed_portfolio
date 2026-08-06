@@ -35,9 +35,13 @@ class AppNavigatorItem extends StatelessWidget {
         final location = router.state.matchedLocation;
         final isActive = isRouteActive(location, item.route);
 
+        // Nested Portfolio routes (all projects / details) still highlight
+        // Portfolio, but tapping must return to the main Portfolio screen.
+        final alreadyOnTarget = location == item.route;
+
         return GestureDetector(
           onTap: () {
-            if (!isActive) {
+            if (!alreadyOnTarget) {
               SectionNavigation.go(context, item.route);
             }
           },

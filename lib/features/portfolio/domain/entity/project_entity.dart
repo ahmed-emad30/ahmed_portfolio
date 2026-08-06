@@ -60,4 +60,11 @@ class ProjectEntity {
       hasValue(apkUrl) ||
       hasValue(webUrl) ||
       supportsWindows;
+
+  /// True when at least one Portfolio mockup preview is configured.
+  bool get hasPreviewImages =>
+      hasValue(previewImage1Url) ||
+      hasValue(previewImage1Key) ||
+      hasValue(previewImage2Url) ||
+      hasValue(previewImage2Key);
 }

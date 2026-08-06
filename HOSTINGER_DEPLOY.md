@@ -3,6 +3,8 @@
 This guide deploys the Flutter **web** build to Hostinger shared hosting.  
 Supabase remains the backend (content + Contact Us). Hostinger only serves static files.
 
+For the full Supabase schema, Storage paths, and GitHub Pages deploy, see [`docs/SUPABASE_AND_DEPLOY.md`](docs/SUPABASE_AND_DEPLOY.md).
+
 ## Prerequisites
 
 - Flutter SDK installed (`flutter --version`)
