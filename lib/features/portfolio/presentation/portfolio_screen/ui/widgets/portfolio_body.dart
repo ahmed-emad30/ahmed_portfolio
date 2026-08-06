@@ -120,7 +120,8 @@ class _PortfolioBodyState extends State<PortfolioBody> {
     );
     // Fixed slots so switching projects does not shift the layout vertically.
     final titleSlotHeight = 64.h;
-    final imageSlotHeight = 280.h;
+    // Tall enough for the Figma dual-phone composition.
+    final imageSlotHeight = 0.42.sh;
 
     return SingleChildScrollView(
       child: Column(
@@ -141,31 +142,36 @@ class _PortfolioBodyState extends State<PortfolioBody> {
               ),
             ),
           ),
-          24.verticalSpace,
+          16.verticalSpace,
+          // Full-bleed preview stage (Figma): phones centered, arrows overlaid.
           SizedBox(
             height: imageSlotHeight,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            width: double.infinity,
+            child: Stack(
+              alignment: Alignment.center,
+              clipBehavior: Clip.none,
               children: [
-                if (showArrows)
-                  NavigationIconButton(
-                    icon: Assets.images.svg.leftArrow.svg(),
-                    onTap: _showPrevious,
-                    compact: true,
-                  ),
-                Expanded(
-                  child: ProjectImageResolver.build(
-                    featured,
-                    fit: BoxFit.contain,
-                    width: double.infinity,
-                    height: imageSlotHeight,
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: _MobilePreviewStack(project: featured),
                   ),
                 ),
                 if (showArrows)
-                  NavigationIconButton(
-                    icon: Assets.images.svg.rightArrow.svg(),
-                    onTap: _showNext,
-                    compact: true,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      NavigationIconButton(
+                        icon: Assets.images.svg.leftArrow.svg(),
+                        onTap: _showPrevious,
+                        compact: true,
+                      ),
+                      const Spacer(),
+                      NavigationIconButton(
+                        icon: Assets.images.svg.rightArrow.svg(),
+                        onTap: _showNext,
+                        compact: true,
+                      ),
+                    ],
                   ),
               ],
             ),
@@ -314,6 +320,83 @@ class _PortfolioBodyState extends State<PortfolioBody> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Figma mobile Portfolio mockups: two phones side-by-side,
+/// left slightly higher, right slightly lower, mild overlap.
+class _MobilePreviewStack extends StatelessWidget {
+  const _MobilePreviewStack({required this.project});
+
+  final ProjectEntity project;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final stageW = constraints.maxWidth;
+        final stageH = constraints.maxHeight;
+        // Each phone ~half the stage; overlap a bit like the Figma frame.
+        final phoneW = stageW * 0.52;
+        final phoneH = stageH * 0.98;
+        final verticalOffset = stageH * 0.08;
+
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Soft ground shadow (matches desktop depth cue).
+            Positioned(
+              left: stageW * 0.18,
+              right: stageW * 0.18,
+              bottom: stageH * 0.06,
+              height: 36.h,
+              child: IgnorePointer(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40.h),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.shadow.withValues(alpha: 0.45),
+                        blurRadius: 40,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Left phone — higher (preview 2)
+            Positioned(
+              left: stageW * 0.02,
+              top: 0,
+              width: phoneW,
+              height: phoneH - verticalOffset,
+              child: ProjectImageResolver.buildPreview(
+                project,
+                index: 2,
+                fit: BoxFit.contain,
+                width: phoneW,
+                height: phoneH - verticalOffset,
+              ),
+            ),
+            // Right phone — lower (preview 1)
+            Positioned(
+              right: stageW * 0.02,
+              bottom: 0,
+              width: phoneW,
+              height: phoneH - verticalOffset,
+              child: ProjectImageResolver.buildPreview(
+                project,
+                index: 1,
+                fit: BoxFit.contain,
+                width: phoneW,
+                height: phoneH - verticalOffset,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
