@@ -9,8 +9,6 @@ import 'package:portfolio/core/widgets/package_widgets/app_list_animate.dart';
 import 'package:portfolio/features/experience/domain/entity/experience_entity.dart';
 import 'package:portfolio/features/experience/presentation/experience_screen/ui/widgets/experience_entry.dart';
 import 'package:portfolio/features/shared/presentation/logic/portfolio_content_cubit.dart';
-import 'package:portfolio/features/skills/domain/entity/skill_entity.dart';
-import 'package:portfolio/features/skills/presentation/skills_screen/ui/widgets/skills_body.dart';
 
 class ExperienceBody extends StatelessWidget {
   const ExperienceBody({super.key});
@@ -18,18 +16,24 @@ class ExperienceBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
-    final data = context.watch<PortfolioContentCubit>().data;
-    final skillCategories = data.skillCategories;
+    final experiences = context.watch<PortfolioContentCubit>().data.experiences;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.only(top: 32.h),
+      padding: EdgeInsets.only(top: 32.h, bottom: 40.h),
       child: AppListAnimate(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _ExperienceHeader(theme: theme),
           48.verticalSpace,
-            _ExperienceTimeline(experiences: data.experiences)
-
+          if (experiences.isEmpty)
+            Text(
+              'No experience entries yet.',
+              style: AppTextStyle.style16Regular.copyWith(
+                color: theme.bodyText.withValues(alpha: 0.85),
+              ),
+            )
+          else
+            _ExperienceTimeline(experiences: experiences),
         ],
       ),
     );
@@ -113,20 +117,6 @@ class _ExperienceTimeline extends StatelessWidget {
             ),
           )
           .toList(),
-    );
-  }
-}
-
-class _ExperienceSkillsPanel extends StatelessWidget {
-  const _ExperienceSkillsPanel({required this.category});
-
-  final SkillCategoryEntity category;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: REdgeInsets.only(top: 48),
-      child: SkillCategoryCard(category: category),
     );
   }
 }

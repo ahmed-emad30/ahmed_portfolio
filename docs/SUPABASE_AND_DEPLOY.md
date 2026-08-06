@@ -100,9 +100,18 @@ UI shows skill names as chips (proficiency is stored but not shown as a progress
 
 | Column | Purpose |
 |--------|---------|
-| `role`, `period`, `context` | Header lines |
-| `bullets` | `text[]` bullet points |
-| `sort_order` | Order |
+| `role` | Job title |
+| `company` | Employer name |
+| `period` | Date range (e.g. `Aug 2025 – Present`) |
+| `context` | Work mode / location (e.g. `Onsite · Mansoura`, `Remote`) |
+| `bullets` | `text[]` achievement bullets |
+| `tech_tags` | `text[]` tech chips shown under each role |
+| `sort_order` | Newest-first order (lower = higher on screen) |
+
+Schema + seed for the resume-backed timeline:
+[`supabase/migrations/20260807_experiences_company_tech_tags.sql`](../supabase/migrations/20260807_experiences_company_tech_tags.sql)
+
+Apply in Supabase Dashboard → **SQL Editor** → paste/run that file (adds columns and replaces rows).
 
 #### `projects`
 

@@ -71,18 +71,35 @@ class ExperienceEntry extends StatelessWidget {
                     height: 1.1,
                   ),
                 ),
-                8.verticalSpace,
-                Text(
-                  entry.context,
-                  style: AppTextStyle.style16Medium.copyWith(
-                    fontSize: context.responsiveSp(
-                      mobile: 14,
-                      tablet: 15,
-                      desktop: 16,
+                if (entry.company.trim().isNotEmpty) ...[
+                  6.verticalSpace,
+                  Text(
+                    entry.company,
+                    style: AppTextStyle.style16Medium.copyWith(
+                      fontSize: context.responsiveSp(
+                        mobile: 15,
+                        tablet: 16,
+                        desktop: 18,
+                      ),
+                      color: theme.bodyText,
+                      height: 1.2,
                     ),
-                    color: theme.bodyText,
                   ),
-                ),
+                ],
+                if (entry.context.trim().isNotEmpty) ...[
+                  4.verticalSpace,
+                  Text(
+                    entry.context,
+                    style: AppTextStyle.style16Medium.copyWith(
+                      fontSize: context.responsiveSp(
+                        mobile: 13,
+                        tablet: 14,
+                        desktop: 15,
+                      ),
+                      color: theme.bodyText.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ],
                 16.verticalSpace,
                 ...entry.bullets.map(
                   (bullet) => Padding(
@@ -119,10 +136,49 @@ class ExperienceEntry extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (entry.techTags.isNotEmpty) ...[
+                  8.verticalSpace,
+                  Wrap(
+                    spacing: 8.w,
+                    runSpacing: 8.h,
+                    children: entry.techTags
+                        .map((tag) => _TechTagChip(label: tag))
+                        .toList(),
+                  ),
+                ],
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TechTagChip extends StatelessWidget {
+  const _TechTagChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.portfolioTheme;
+
+    return Container(
+      padding: REdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      decoration: BoxDecoration(
+        color: theme.primaryAccent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(
+          color: theme.primaryAccent.withValues(alpha: 0.16),
+        ),
+      ),
+      child: Text(
+        label,
+        style: AppTextStyle.style13Regular.copyWith(
+          color: theme.bodyText,
+          height: 1.2,
+        ),
       ),
     );
   }

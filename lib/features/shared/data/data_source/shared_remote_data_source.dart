@@ -21,11 +21,11 @@ class SharedRemoteDataSourceImp implements SharedRemoteDataSource {
   Future<PortfolioDataEntity> fetchPortfolioData() async {
     final results = await Future.wait([
       _client.from('profile').select().limit(1).maybeSingle(),
-      _client.from('social_links').select().order('sort_order'),
-      _client.from('services').select().order('sort_order'),
-      _client.from('skill_categories').select().order('sort_order'),
-      _client.from('skills').select().order('sort_order'),
-      _client.from('experiences').select().order('sort_order'),
+      _client.from('social_links').select().order('sort_order',ascending: true),
+      _client.from('services').select().order('sort_order',ascending: true),
+      _client.from('skill_categories').select().order('sort_order',ascending: true),
+      _client.from('skills').select().order('sort_order',ascending: true),
+      _client.from('experiences').select().order('sort_order',ascending: true),
       _client.from('projects').select().order('sort_order',ascending: true),
     ]);
 
@@ -94,9 +94,12 @@ class SharedRemoteDataSourceImp implements SharedRemoteDataSource {
           .map(
             (row) => ExperienceEntity(
               role: row['role'] as String,
+              company: _text(row['company']),
               period: row['period'] as String,
               context: row['context'] as String,
               bullets: (row['bullets'] as List?)?.cast<String>() ?? const [],
+              techTags:
+                  (row['tech_tags'] as List?)?.cast<String>() ?? const [],
             ),
           )
           .toList(),
