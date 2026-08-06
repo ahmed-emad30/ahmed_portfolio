@@ -396,7 +396,6 @@ class GradientStrokeText extends StatelessWidget {
             tablet: 96,
             desktop: 100,
           ),
-          height: 0.8,
           foreground: Paint()
             ..style = PaintingStyle.stroke
             ..strokeWidth = 2,
