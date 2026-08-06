@@ -1,20 +1,18 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:portfolio/core/app_routes/routes_strings.dart';
 import 'package:portfolio/core/utils/app_constants.dart';
 
 /// Tracks navigation direction for vertical scroll transitions and edge-scroll.
 class SectionNavigation {
   SectionNavigation._();
 
-  static String fromRoute = Routes.homeScreen;
-  static String toRoute = Routes.homeScreen;
+  static String fromRoute = AppConstants.items.first.route;
+  static String toRoute = AppConstants.items.first.route;
   static bool goingDown = true;
 
-  /// Main sections that participate in edge-scroll (Home excluded).
+  /// All main sections that participate in edge-scroll (including Home).
   static List<String> get scrollableRoutes => AppConstants.items
       .map((item) => item.route)
-      .where((route) => route != Routes.homeScreen)
       .toList(growable: false);
 
   static bool isScrollableSection(String route) {
@@ -41,7 +39,7 @@ class SectionNavigation {
     context.go(route);
   }
 
-  /// Edge-scroll target: next/previous scrollable section, never Home.
+  /// Edge-scroll target: next/previous main section.
   static String? neighbor(String currentRoute, int direction) {
     final routes = scrollableRoutes;
     final index = routes.indexOf(currentRoute);

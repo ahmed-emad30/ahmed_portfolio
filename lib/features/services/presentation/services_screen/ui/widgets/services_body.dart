@@ -344,7 +344,7 @@ class FeatureCard extends StatelessWidget {
           ),
           Text(
             description,
-            textAlign: TextAlign.justify,
+            // textAlign: TextAlign.justify,
             maxLines: 4,
             style: AppTextStyle.style16Medium.copyWith(
               color: theme.bodyText,

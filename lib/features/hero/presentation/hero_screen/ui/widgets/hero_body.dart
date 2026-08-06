@@ -108,20 +108,22 @@ class _HeroMobileLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.portfolioTheme;
+    final profile = context.watch<PortfolioContentCubit>().data.profile;
+
 
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 24.h),
+      padding: EdgeInsets.fromLTRB(16.w, 72.h, 0.w, 24.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: 320.h,
+            // height: 0.75.sh,
             width: double.infinity,
             child: _ProfileImage(theme: theme, compact: true),
           ),
           24.verticalSpace,
           AutoSizeText(
-            'Ahmed\nEmad.',
+            profile.displayNameWithBreak,
             maxLines: 2,
             minFontSize: 28,
             style: AppTextStyle.style96ExtraBold.copyWith(
@@ -136,7 +138,7 @@ class _HeroMobileLayout extends StatelessWidget {
           ),
           12.verticalSpace,
           Text(
-            'Flutter Developer',
+            profile.title,
             style: AppTextStyle.style36Bold.copyWith(
               fontSize: context.responsiveSp(
                 mobile: 22,
@@ -211,7 +213,14 @@ class _HeroContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (showThemeToggle) const ThemeToggleButton(),
+        if (showThemeToggle)
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(end: 24.w, top: 8.h),
+              child: const ThemeToggleButton(),
+            ),
+          ),
         Expanded(
           flex: 5,
           child: Column(

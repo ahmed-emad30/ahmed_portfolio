@@ -140,6 +140,7 @@ class _ContactFormSectionState extends State<ContactFormSection> {
             ),
             SendMessageButton(onSend: _submit),
             const ContactSocialsRow(),
+            8.verticalSpace
           ],
         ),
       ),
@@ -172,14 +173,15 @@ class ContactSocialsRow extends StatelessWidget {
       ),
     ];
 
-    if (context.isMobileOrTablet) {
+/*    if (context.isMobileOrTablet) {
       return Wrap(
         spacing: 12.w,
         runSpacing: 12.h,
         alignment: WrapAlignment.center,
-        children: actions,
+        // runAlignment: WrapAlignment.center,
+        // children: actions,
       );
-    }
+    }*/
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

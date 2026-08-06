@@ -21,21 +21,16 @@ class ExperienceBody extends StatelessWidget {
     final data = context.watch<PortfolioContentCubit>().data;
     final skillCategories = data.skillCategories;
 
-    return Padding(
-      padding: EdgeInsets.only(
-        top: context.sectionTopPadding,
-        bottom: 40.h,
-      ),
-      child: SingleChildScrollView(
-        child: AppListAnimate(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _ExperienceHeader(theme: theme),
-            48.verticalSpace,
-              _ExperienceTimeline(experiences: data.experiences)
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(top: 32.h),
+      child: AppListAnimate(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _ExperienceHeader(theme: theme),
+          48.verticalSpace,
+            _ExperienceTimeline(experiences: data.experiences)
 
-          ],
-        ),
+        ],
       ),
     );
   }

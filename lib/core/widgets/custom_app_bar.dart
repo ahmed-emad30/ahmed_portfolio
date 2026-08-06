@@ -21,10 +21,16 @@ class PortfolioTopBar extends StatelessWidget {
         child: context.useCompactNavigation
             ? Builder(
                 builder: (context) => Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
                       icon: Icon(Icons.menu, color: theme.primaryAccent),
                       onPressed: () => Scaffold.of(context).openDrawer(),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(
+                        minWidth: 48,
+                        minHeight: 48,
+                      ),
                     ),
                     const Spacer(),
                     const ThemeToggleButton(compact: true),
@@ -32,6 +38,7 @@ class PortfolioTopBar extends StatelessWidget {
                 ),
               )
             : const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TopAppNavigator(),

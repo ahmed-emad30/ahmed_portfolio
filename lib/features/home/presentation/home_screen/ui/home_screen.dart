@@ -26,25 +26,36 @@ class HomeScreen extends StatelessWidget {
                     Positioned(
                       top: 8.h,
                       left: 4.w,
+                      right: 4.w,
                       child: Builder(
-                        builder: (context) => IconButton(
-                          icon: Icon(
-                            Icons.menu,
-                            color: context.portfolioTheme.primaryAccent,
-                          ),
-                          onPressed: () => Scaffold.of(context).openDrawer(),
+                        builder: (context) => Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.menu,
+                                color: context.portfolioTheme.primaryAccent,
+                              ),
+                              onPressed: () =>
+                                  Scaffold.of(context).openDrawer(),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(
+                                minWidth: 48,
+                                minHeight: 48,
+                              ),
+                            ),
+                            const Spacer(),
+                            const ThemeToggleButton(compact: true),
+                          ],
                         ),
                       ),
-                    ),
-                    const Positioned(
-                      top: 0,
-                      right: 0,
-                      child: ThemeToggleButton(compact: true),
                     ),
                   ],
                 )
               : SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
                   child: const HeroBody(),
                 ),
         ),
