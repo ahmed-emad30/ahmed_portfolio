@@ -64,10 +64,7 @@ class SkillsBody extends StatelessWidget {
       ),
     );
 
-    if (context.isMobile) {
-      return SingleChildScrollView(child: content);
-    }
-    return content;
+    return SingleChildScrollView(child: content);
   }
 }
 

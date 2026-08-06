@@ -109,43 +109,108 @@ sealed class PortfolioContent {
           ],
         ),
         SkillCategoryEntity(
-          title: 'Backend & Tools',
+          title: 'State Management',
           skills: [
-            SkillEntity(
-              name: 'REST APIs',
-              proficiency: 85,
-              color: AppColors.yellowProgress,
-            ),
-            SkillEntity(
-              name: 'Firebase',
-              proficiency: 80,
-              color: AppColors.redProgress,
-            ),
+            SkillEntity(name: 'BLoC (Cubit)', proficiency: 95, color: AppColors.greenProgress),
+            SkillEntity(name: 'Provider', proficiency: 90, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Riverpod', proficiency: 90, color: AppColors.yellowProgress),
+            SkillEntity(name: 'GetX', proficiency: 85, color: AppColors.redProgress),
           ],
         ),
         SkillCategoryEntity(
-          title: 'Architecture & Practices',
+          title: 'Backend Integration',
           skills: [
-            SkillEntity(
-              name: 'Cubit / Bloc',
-              proficiency: 88,
-              color: AppColors.greenProgress,
-            ),
-            SkillEntity(
-              name: 'Localization (AR/EN)',
-              proficiency: 85,
-              color: AppColors.lightBlueProgress,
-            ),
-            SkillEntity(
-              name: 'Responsive UI',
-              proficiency: 90,
-              color: AppColors.yellowProgress,
-            ),
-            SkillEntity(
-              name: 'Performance',
-              proficiency: 82,
-              color: AppColors.redProgress,
-            ),
+            SkillEntity(name: 'RESTful APIs', proficiency: 95, color: AppColors.yellowProgress),
+            SkillEntity(name: 'Dio', proficiency: 95, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'HTTP', proficiency: 90, color: AppColors.greenProgress),
+            SkillEntity(name: 'JSON Serialization', proficiency: 90, color: AppColors.redProgress),
+            SkillEntity(name: 'WebSockets', proficiency: 85, color: AppColors.yellowProgress),
+          ],
+        ),
+        SkillCategoryEntity(
+          title: 'Firebase',
+          skills: [
+            SkillEntity(name: 'Authentication', proficiency: 95, color: AppColors.greenProgress),
+            SkillEntity(name: 'Cloud Firestore', proficiency: 90, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Cloud Messaging (FCM)', proficiency: 90, color: AppColors.yellowProgress),
+            SkillEntity(name: 'Crashlytics', proficiency: 85, color: AppColors.redProgress),
+            SkillEntity(name: 'Analytics', proficiency: 85, color: AppColors.greenProgress),
+            SkillEntity(name: 'Firebase hosting', proficiency: 85, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Firebase Database (real time database)', proficiency: 85, color: AppColors.yellowProgress),
+            SkillEntity(name: 'Firebase Dynamics', proficiency: 80, color: AppColors.redProgress),
+          ],
+        ),
+        SkillCategoryEntity(
+          title: 'Local Storage',
+          skills: [
+            SkillEntity(name: 'Hive', proficiency: 95, color: AppColors.greenProgress),
+            SkillEntity(name: 'SharedPreferences', proficiency: 95, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Secure Storage', proficiency: 90, color: AppColors.yellowProgress),
+            SkillEntity(name: 'SQLite', proficiency: 85, color: AppColors.redProgress),
+          ],
+        ),
+        SkillCategoryEntity(
+          title: 'CI/CD & DevOps',
+          skills: [
+            SkillEntity(name: 'GitHub Actions', proficiency: 90, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Codemagic', proficiency: 90, color: AppColors.greenProgress),
+            SkillEntity(name: 'Shorebird', proficiency: 85, color: AppColors.yellowProgress),
+            SkillEntity(name: 'Fastlane', proficiency: 85, color: AppColors.redProgress),
+            SkillEntity(name: 'Flutter Flavors', proficiency: 90, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'App Distribution', proficiency: 85, color: AppColors.greenProgress),
+          ],
+        ),
+        SkillCategoryEntity(
+          title: 'Publishing',
+          skills: [
+            SkillEntity(name: 'Google Play Console', proficiency: 95, color: AppColors.greenProgress),
+            SkillEntity(name: 'Apple App Store Connect', proficiency: 90, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Huawei AppGallery', proficiency: 90, color: AppColors.yellowProgress),
+          ],
+        ),
+        SkillCategoryEntity(
+          title: 'Testing & Debugging',
+          skills: [
+            SkillEntity(name: 'Unit Testing', proficiency: 85, color: AppColors.greenProgress),
+            SkillEntity(name: 'Widget Testing', proficiency: 85, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Integration Testing', proficiency: 80, color: AppColors.yellowProgress),
+            SkillEntity(name: 'E2E testing', proficiency: 80, color: AppColors.redProgress),
+            SkillEntity(name: 'Performance Optimization', proficiency: 85, color: AppColors.greenProgress),
+            SkillEntity(name: 'Memory Leak Analysis', proficiency: 80, color: AppColors.lightBlueProgress),
+          ],
+        ),
+        SkillCategoryEntity(
+          title: 'Tools',
+          skills: [
+            SkillEntity(name: 'Git', proficiency: 95, color: AppColors.greenProgress),
+            SkillEntity(name: 'Android Studio', proficiency: 95, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Xcode', proficiency: 90, color: AppColors.yellowProgress),
+            SkillEntity(name: 'VS Code', proficiency: 95, color: AppColors.redProgress),
+            SkillEntity(name: 'Postman', proficiency: 90, color: AppColors.greenProgress),
+            SkillEntity(name: 'Figma', proficiency: 85, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Jira', proficiency: 85, color: AppColors.yellowProgress),
+            SkillEntity(name: 'Firebase Console', proficiency: 90, color: AppColors.redProgress),
+          ],
+        ),
+        SkillCategoryEntity(
+          title: 'Automation & Scripting',
+          skills: [
+            SkillEntity(name: 'Bash', proficiency: 85, color: AppColors.greenProgress),
+            SkillEntity(name: 'Dart Scripts', proficiency: 90, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Build Automation', proficiency: 85, color: AppColors.yellowProgress),
+            SkillEntity(name: 'Rebranding Automation', proficiency: 85, color: AppColors.redProgress),
+            SkillEntity(name: 'Codemagic', proficiency: 90, color: AppColors.greenProgress),
+            SkillEntity(name: 'Fastlane', proficiency: 85, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'CI/CD', proficiency: 90, color: AppColors.yellowProgress),
+          ],
+        ),
+        SkillCategoryEntity(
+          title: 'Development Practices',
+          skills: [
+            SkillEntity(name: 'Agile (Scrum)', proficiency: 95, color: AppColors.greenProgress),
+            SkillEntity(name: 'Code Review', proficiency: 95, color: AppColors.lightBlueProgress),
+            SkillEntity(name: 'Technical Documentation', proficiency: 90, color: AppColors.yellowProgress),
+            SkillEntity(name: 'SDLC', proficiency: 90, color: AppColors.redProgress),
           ],
         ),
       ];
