@@ -4,11 +4,14 @@
 # Usage (from repo root):
 #   ./scripts/deploy_github_pages.sh
 #
+# Required env (active Supabase project, Settings → API):
+#   SUPABASE_URL=https://<ref>.supabase.co
+#   SUPABASE_ANON_KEY=sb_publishable_...
+#
 # Optional env overrides:
 #   REPO_NAME=ahmed_portfolio
 #   GH_PAGES_BRANCH=gh-pages
-#   SUPABASE_URL=https://....supabase.co
-#   SUPABASE_ANON_KEY=your_key
+#   SUPABASE_SCHEMA=portfolio
 #   USE_PATH_URL=true
 #   SKIP_BUILD=1          # deploy existing build/web only
 #   DRY_RUN=1             # build only, do not push
@@ -21,8 +24,9 @@ cd "$ROOT_DIR"
 REPO_NAME="${REPO_NAME:-ahmed_portfolio}"
 GH_PAGES_BRANCH="${GH_PAGES_BRANCH:-gh-pages}"
 BASE_HREF="/${REPO_NAME}/"
-SUPABASE_URL="${SUPABASE_URL:-https://tptaqfbmqifzewewnudg.supabase.co}"
-SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY:-sb_publishable_N2tce2vsArUliYLn9pkxkQ_acu2kZdy}"
+SUPABASE_URL="${SUPABASE_URL:-}"
+SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY:-}"
+SUPABASE_SCHEMA="${SUPABASE_SCHEMA:-portfolio}"
 USE_PATH_URL="${USE_PATH_URL:-true}"
 SKIP_BUILD="${SKIP_BUILD:-0}"
 DRY_RUN="${DRY_RUN:-0}"
@@ -45,6 +49,11 @@ if ! command -v git >/dev/null 2>&1; then
   exit 1
 fi
 
+if [[ "$SKIP_BUILD" != "1" && ( -z "$SUPABASE_URL" || -z "$SUPABASE_ANON_KEY" ) ]]; then
+  echo "error: set SUPABASE_URL and SUPABASE_ANON_KEY (without them the site only shows bundled content)" >&2
+  exit 1
+fi
+
 REMOTE_URL="$(git remote get-url origin)"
 
 if [[ "$SKIP_BUILD" != "1" ]]; then
@@ -56,7 +65,8 @@ if [[ "$SKIP_BUILD" != "1" ]]; then
     --base-href="$BASE_HREF" \
     --dart-define=USE_PATH_URL="$USE_PATH_URL" \
     --dart-define=SUPABASE_URL="$SUPABASE_URL" \
-    --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY"
+    --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
+    --dart-define=SUPABASE_SCHEMA="$SUPABASE_SCHEMA"
 else
   echo "==> Skipping build (SKIP_BUILD=1)"
 fi

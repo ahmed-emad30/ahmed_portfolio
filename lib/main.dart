@@ -19,10 +19,16 @@ Future<void> main() async {
   }
   Bloc.observer = MyBlocObserver();
   await PrefHelper.init();
-  await Supabase.initialize(
-    url: SupabaseConfig.url,
-    publishableKey: SupabaseConfig.publishableKey,
-  );
+  // Without a backend the site still renders PortfolioContent.fallback.
+  if (SupabaseConfig.isConfigured) {
+    await Supabase.initialize(
+      url: SupabaseConfig.url,
+      publishableKey: SupabaseConfig.publishableKey,
+      postgrestOptions: const PostgrestClientOptions(
+        schema: SupabaseConfig.schema,
+      ),
+    );
+  }
   await ServiceLocator.init();
   runApp(const PortfolioApp());
 }

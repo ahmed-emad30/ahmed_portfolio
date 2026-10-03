@@ -91,10 +91,10 @@ class _PortfolioAppViewState extends State<_PortfolioAppView> {
         final width =
             constraints.maxWidth > 0 ? constraints.maxWidth : fallbackWidth;
         final designSize = ScreenSizeUtils.designSizeForWidth(width);
-        final sizeType = ScreenSizeUtils.getScreenSizeTypeFromWidth(width);
 
+        // No key: re-keying on a breakpoint change rebuilt the whole app and
+        // reset the current route and scroll position.
         return ScreenUtilInit(
-          key: ValueKey(sizeType),
           designSize: designSize,
           ensureScreenSize: true,
           minTextAdapt: true,
@@ -102,31 +102,13 @@ class _PortfolioAppViewState extends State<_PortfolioAppView> {
           builder: (_, child) {
             return BlocBuilder<ThemeCubit, ThemeState>(
               builder: (context, state) {
-                return BlocBuilder<PortfolioContentCubit, PortfolioContentState>(
-                  builder: (context, contentState) {
-                    if (contentState is PortfolioContentLoading) {
-                      return MaterialApp(
-                        debugShowCheckedModeBanner: false,
-                        theme: AppLightThemes.call(),
-                        darkTheme: AppDarkThemes.call(),
-                        themeMode:
-                            state.isDark ? ThemeMode.dark : ThemeMode.light,
-                        home: const Scaffold(
-                          body: Center(child: CircularProgressIndicator()),
-                        ),
-                      );
-                    }
-
-                    return MaterialApp.router(
-                      routerConfig: _router,
-                      debugShowCheckedModeBanner: false,
-                      title: 'Ahmed Emad Portfolio',
-                      theme: AppLightThemes.call(),
-                      darkTheme: AppDarkThemes.call(),
-                      themeMode:
-                          state.isDark ? ThemeMode.dark : ThemeMode.light,
-                    );
-                  },
+                return MaterialApp.router(
+                  routerConfig: _router,
+                  debugShowCheckedModeBanner: false,
+                  title: 'Ahmed Emad Portfolio',
+                  theme: AppLightThemes.call(),
+                  darkTheme: AppDarkThemes.call(),
+                  themeMode: state.isDark ? ThemeMode.dark : ThemeMode.light,
                 );
               },
             );

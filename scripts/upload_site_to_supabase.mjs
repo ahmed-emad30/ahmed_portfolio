@@ -7,10 +7,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const webRoot = path.join(root, 'build', 'web');
 
-const SUPABASE_URL = 'https://tptaqfbmqifzewewnudg.supabase.co';
-const SUPABASE_KEY =
-  process.env.SUPABASE_ANON_KEY ||
-  'sb_publishable_N2tce2vsArUliYLn9pkxkQ_acu2kZdy';
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error('Set SUPABASE_URL and SUPABASE_ANON_KEY.');
+  process.exit(1);
+}
 const BUCKET = 'site';
 const PREFIX = 'www';
 

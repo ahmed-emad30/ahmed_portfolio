@@ -3,7 +3,7 @@
  * using the Supabase Management API (requires a personal access token).
  *
  * Usage:
- *   SUPABASE_ACCESS_TOKEN=sbp_... node scripts/apply_experiences_migration.mjs
+ *   SUPABASE_PROJECT_REF=<ref> SUPABASE_ACCESS_TOKEN=sbp_... node scripts/apply_experiences_migration.mjs
  *
  * Or run the SQL file manually in Dashboard → SQL Editor.
  */
@@ -12,8 +12,13 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const projectRef = process.env.SUPABASE_PROJECT_REF || 'tptaqfbmqifzewewnudg';
+const projectRef = process.env.SUPABASE_PROJECT_REF;
 const token = process.env.SUPABASE_ACCESS_TOKEN;
+
+if (!projectRef) {
+  console.error('Missing SUPABASE_PROJECT_REF (the active project ref).');
+  process.exit(1);
+}
 const sqlPath = path.resolve(
   __dirname,
   '../supabase/migrations/20260807_experiences_company_tech_tags.sql',

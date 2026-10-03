@@ -1,12 +1,15 @@
+-- Targets the `portfolio` schema (run after 20261003_portfolio_schema.sql).
+-- Already included in supabase/seed/portfolio_seed_from_repo.sql; kept as a re-runnable content update.
+
 -- Experience revamp: company + tech tags, resume content
 
-alter table public.experiences
+alter table portfolio.experiences
   add column if not exists company text not null default '',
   add column if not exists tech_tags text[] not null default '{}';
 
-delete from public.experiences;
+delete from portfolio.experiences;
 
-insert into public.experiences (
+insert into portfolio.experiences (
   role,
   company,
   period,
