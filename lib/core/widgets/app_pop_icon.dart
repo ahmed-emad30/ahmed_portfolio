@@ -9,6 +9,7 @@ class AppPopIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      tooltip: 'Back',
       onPressed: () => context.pop(),
       icon: Transform.rotate(
         angle: /*context.isArabic*/false ? 3.14 : 0,

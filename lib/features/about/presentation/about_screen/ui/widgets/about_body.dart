@@ -35,7 +35,10 @@ class AboutBody extends StatelessWidget {
                 ),
                 height: 0.8,
                 letterSpacing: 0,
-                foreground: AppMethods.textStroke(color: theme.primaryAccent),
+                // Outline-only text is too thin to read on small screens.
+                foreground: context.isMobile
+                    ? (Paint()..color = theme.primaryAccent)
+                    : AppMethods.textStroke(color: theme.primaryAccent),
               ),
             ),
           ),

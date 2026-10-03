@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:portfolio/core/supabase/supabase_config.dart';
@@ -16,6 +17,11 @@ Future<void> main() async {
   const usePathUrl = bool.fromEnvironment('USE_PATH_URL', defaultValue: true);
   if (kIsWeb && usePathUrl) {
     usePathUrlStrategy();
+  }
+  if (kIsWeb) {
+    // Flutter web only builds the accessibility tree on request; without it
+    // screen readers see an empty canvas.
+    SemanticsBinding.instance.ensureSemantics();
   }
   Bloc.observer = MyBlocObserver();
   await PrefHelper.init();

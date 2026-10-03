@@ -6,7 +6,6 @@ import 'package:portfolio/core/app_themes/text_style/app_text_style.dart';
 import 'package:portfolio/core/navigation/section_navigation.dart';
 import 'package:portfolio/core/utils/app_constants.dart';
 import 'package:portfolio/core/widgets/app_navigator_item.dart';
-import 'package:portfolio/core/widgets/active_line.dart';
 
 class PortfolioNavigationDrawer extends StatelessWidget {
   const PortfolioNavigationDrawer({super.key});
@@ -49,8 +48,14 @@ class PortfolioNavigationDrawer extends StatelessWidget {
                       item.route,
                     );
 
+                    // Active item gets a pill (M3 navigation drawer style)
+                    // instead of a short line above the label.
                     return ListTile(
-                      contentPadding: EdgeInsets.zero,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
+                      shape: const StadiumBorder(),
+                      selected: isActive,
+                      selectedTileColor:
+                          theme.primaryAccent.withValues(alpha: 0.15),
                       onTap: () {
                         Navigator.of(context).pop();
                         final location = router.state.matchedLocation;
@@ -59,17 +64,12 @@ class PortfolioNavigationDrawer extends StatelessWidget {
                           SectionNavigation.go(context, item.route);
                         }
                       },
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (isActive) const ActiveLine(),
-                          Text(
-                            item.title,
-                            style: AppTextStyle.style24Regular.copyWith(
-                              color: theme.navText,
-                            ),
-                          ),
-                        ],
+                      title: Text(
+                        item.title,
+                        style: AppTextStyle.style24Regular.copyWith(
+                          color: isActive ? theme.primaryAccent : theme.navText,
+                          fontWeight: isActive ? FontWeight.w600 : null,
+                        ),
                       ),
                     );
                   },

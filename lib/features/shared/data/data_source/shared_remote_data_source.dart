@@ -12,6 +12,16 @@ abstract class SharedRemoteDataSource {
   Future<PortfolioDataEntity> fetchPortfolioData();
 }
 
+/// Used when the build has no Supabase URL/key; callers fall back to bundled
+/// content.
+class SharedRemoteDataSourceUnavailable implements SharedRemoteDataSource {
+  const SharedRemoteDataSourceUnavailable();
+
+  @override
+  Future<PortfolioDataEntity> fetchPortfolioData() =>
+      Future.error(StateError('Supabase is not configured'));
+}
+
 class SharedRemoteDataSourceImp implements SharedRemoteDataSource {
   SharedRemoteDataSourceImp(this._client);
 

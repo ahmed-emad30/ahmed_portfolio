@@ -14,6 +14,13 @@ class ContactSection extends StatelessWidget {
   final bool horizontal;
 
   static const _keys = ['github', 'linkedin', 'email', 'whatsapp', 'cv'];
+  static const _labels = [
+    'GitHub',
+    'LinkedIn',
+    'Email',
+    'WhatsApp',
+    'Resume (CV)',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +47,7 @@ class ContactSection extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 8.w),
             child: ContactIcon(
               onTap: () => openAt(index),
+              label: _labels[index],
               child: icons[index],
             ),
           ),
@@ -65,6 +73,7 @@ class ContactSection extends StatelessWidget {
                 icons.length,
                 (index) => ContactIcon(
                   onTap: () => openAt(index),
+                  label: _labels[index],
                   child: icons[index],
                 ),
               ),

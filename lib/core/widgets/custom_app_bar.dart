@@ -24,6 +24,7 @@ class PortfolioTopBar extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
+                      tooltip: 'Open menu',
                       icon: Icon(Icons.menu, color: theme.primaryAccent),
                       onPressed: () => Scaffold.of(context).openDrawer(),
                       padding: EdgeInsets.zero,

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:portfolio/core/app_themes/colors/portfolio_theme_extension.dart';
 import 'package:portfolio/core/utils/responsive_values.dart';
 import 'package:portfolio/core/widgets/custom_app_bar.dart';
 import 'package:portfolio/core/widgets/portfolio_scaffold_background.dart';
-import 'package:portfolio/core/widgets/theme_toggle_button.dart';
 import 'package:portfolio/features/hero/presentation/hero_screen/ui/widgets/hero_body.dart';
 
 import 'package:portfolio/core/widgets/section_scroll_navigator.dart';
@@ -23,32 +20,13 @@ class HomeScreen extends StatelessWidget {
               ? Stack(
                   children: [
                     const HeroBody(),
+                    // Same bar as the other sections so the icons don't
+                    // jump when navigating away from Home.
                     Positioned(
-                      top: 8.h,
-                      left: 4.w,
-                      right: 4.w,
-                      child: Builder(
-                        builder: (context) => Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                Icons.menu,
-                                color: context.portfolioTheme.primaryAccent,
-                              ),
-                              onPressed: () =>
-                                  Scaffold.of(context).openDrawer(),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(
-                                minWidth: 48,
-                                minHeight: 48,
-                              ),
-                            ),
-                            const Spacer(),
-                            const ThemeToggleButton(compact: true),
-                          ],
-                        ),
-                      ),
+                      top: 0,
+                      left: context.horizontalPadding,
+                      right: context.horizontalPadding,
+                      child: const PortfolioTopBar(),
                     ),
                   ],
                 )

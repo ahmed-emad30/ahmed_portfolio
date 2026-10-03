@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/navigation/section_navigation.dart';
@@ -25,8 +27,7 @@ class _SectionScrollNavigatorState extends State<SectionScrollNavigator> {
 
   DateTime? _lastNavigation;
   double _edgeAccumulated = 0;
-  bool _atTop = true;
-  bool _atBottom = true;
+  bool _scrolledSinceSignal = false;
 
   bool get _enabled =>
       SectionNavigation.isScrollableSection(widget.currentRoute);
@@ -36,8 +37,6 @@ class _SectionScrollNavigatorState extends State<SectionScrollNavigator> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.currentRoute != widget.currentRoute) {
       _edgeAccumulated = 0;
-      _atTop = true;
-      _atBottom = true;
     }
   }
 
@@ -70,16 +69,17 @@ class _SectionScrollNavigatorState extends State<SectionScrollNavigator> {
     if (notification.metrics.axis != Axis.vertical) return false;
 
     final metrics = notification.metrics;
-    _atTop = metrics.pixels <= metrics.minScrollExtent + _edgeEpsilon;
-    _atBottom = metrics.pixels >= metrics.maxScrollExtent - _edgeEpsilon;
+    final atTop = metrics.pixels <= metrics.minScrollExtent + _edgeEpsilon;
+    final atBottom = metrics.pixels >= metrics.maxScrollExtent - _edgeEpsilon;
 
     if (notification is ScrollUpdateNotification) {
+      _scrolledSinceSignal = true;
       final delta = notification.scrollDelta ?? 0;
-      if (delta > 0 && _atBottom) {
+      if (delta > 0 && atBottom) {
         _accumulate(delta, 1);
-      } else if (delta < 0 && _atTop) {
+      } else if (delta < 0 && atTop) {
         _accumulate(-delta, -1);
-      } else if (!_atTop && !_atBottom) {
+      } else if (!atTop && !atBottom) {
         _edgeAccumulated = 0;
       }
     } else if (notification is OverscrollNotification) {
@@ -105,13 +105,15 @@ class _SectionScrollNavigatorState extends State<SectionScrollNavigator> {
           final dy = event.scrollDelta.dy;
           if (dy == 0) return;
 
-          // Only chain sections when already at a vertical edge (or the
-          // page has no overflow yet, which keeps both edge flags true).
-          if (dy > 0 && _atBottom) {
-            _accumulate(dy, 1);
-          } else if (dy < 0 && _atTop) {
-            _accumulate(-dy, -1);
-          }
+          // The Scrollable handles this same wheel event synchronously. Only
+          // chain sections if it could not move the content (already at that
+          // edge, or nothing to scroll). Reading cached edge flags here made
+          // the first wheel tick on a freshly opened section skip it.
+          _scrolledSinceSignal = false;
+          scheduleMicrotask(() {
+            if (!mounted || _scrolledSinceSignal) return;
+            _accumulate(dy.abs(), dy > 0 ? 1 : -1);
+          });
         },
         child: widget.child,
       ),

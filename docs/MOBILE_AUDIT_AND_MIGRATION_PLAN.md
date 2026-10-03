@@ -96,3 +96,27 @@ Severity is rated against Material 3 guidance, WCAG 2.2 AA and common mobile-web
 3. User: run the migration in the active project's SQL editor and expose the schema (§1c).
 4. Fix H2–H5, then M1–M9.
 5. Rebuild, re-test at 375×812 and 768×1024, deploy.
+
+---
+
+## 4. Status (2026-10-03)
+
+Done in code. Verified with `flutter analyze` (no new issues) and a release web build screenshotted at 375×812 in headless Chromium, using bundled content (no backend):
+
+| # | Status |
+|---|--------|
+| §1b | `supabase/migrations/20261003_portfolio_schema.sql` + `supabase/seed/portfolio_seed_from_repo.sql`, tested twice in a row on Postgres 16 (anon can read content and insert messages, cannot read messages or write content) |
+| §1d | `SUPABASE_SCHEMA` define + `PostgrestClientOptions(schema)`. No URL/key baked in. Without them the site renders the fallback and the contact form reports failure |
+| H1, M8 | Cubit starts with `PortfolioContent.fallback` and swaps in remote data. No blank startup spinner |
+| H2, M1, M2 | Services: any card count, one column on phones, no clipped text, shadow alpha fixed |
+| H3 | Hero: name/title/links first, photo fixed at 45% of viewport height |
+| H4 | Wheel: a tick only chains sections if the Scrollable couldn't move. The first tick on Services now scrolls Services |
+| H5 | `ensureSemantics()` on web. Labels/tooltips on icon-only buttons. Contact icons have a 48px hit area. Pinch-zoom is still blocked by the Flutter engine's own viewport meta (not app-configurable) |
+| M3 | Solid headings on phones (Services, About name, Let's Connect) |
+| M4, M5 | QR code hidden on phones. Form, Send button and socials all reachable above the footer |
+| M6 | Home uses the shared `PortfolioTopBar` (icons no longer shift) |
+| M7 | Drawer uses a pill for the active item |
+| M9 | `ScreenUtilInit` no longer keyed by size class |
+| Low | `web/index.html` loads `flutter_bootstrap.js` |
+
+Still on the owner: §1a dump (or accept the seed), run the migration, expose the schema, pass the URL/publishable key at build time, re-upload Storage files, and re-test on a real phone.
