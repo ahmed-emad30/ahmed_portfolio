@@ -4,6 +4,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import 'package:portfolio/core/api/api_request_helpers/api_consumer.dart';
 import 'package:portfolio/core/api/api_request_helpers/dio_consumer.dart';
 import 'package:portfolio/core/helpers/helper_functions/network_status.dart';
+import 'package:portfolio/core/supabase/supabase_config.dart';
 import 'package:portfolio/features/contact/data/data_source/contact_remote_data_source.dart';
 import 'package:portfolio/features/contact/data/repository/contact_repository_imp.dart';
 import 'package:portfolio/features/contact/domain/repository/contact_repository.dart';
@@ -33,8 +34,11 @@ class ServiceLocator {
 
     sl.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
 
+    // Supabase is only initialized when the build has a URL and key.
     sl.registerLazySingleton<SharedRemoteDataSource>(
-      () => SharedRemoteDataSourceImp(sl<SupabaseClient>()),
+      () => SupabaseConfig.isConfigured
+          ? SharedRemoteDataSourceImp(sl<SupabaseClient>())
+          : const SharedRemoteDataSourceUnavailable(),
     );
     sl.registerLazySingleton<SharedRepository>(
       () => SharedRepositoryImp(sl<SharedRemoteDataSource>()),
@@ -44,7 +48,9 @@ class ServiceLocator {
     );
 
     sl.registerLazySingleton<ContactRemoteDataSource>(
-      () => ContactRemoteDataSourceImp(sl<SupabaseClient>()),
+      () => SupabaseConfig.isConfigured
+          ? ContactRemoteDataSourceImp(sl<SupabaseClient>())
+          : const ContactRemoteDataSourceUnavailable(),
     );
     sl.registerLazySingleton<ContactRepository>(
       () => ContactRepositoryImp(sl<ContactRemoteDataSource>()),

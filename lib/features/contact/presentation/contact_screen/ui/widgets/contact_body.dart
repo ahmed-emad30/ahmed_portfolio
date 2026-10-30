@@ -157,18 +157,22 @@ class ContactSocialsRow extends StatelessWidget {
 
     final actions = [
       WhatsAppButton(
+        tooltip: 'WhatsApp',
         onTap: () => UrlLauncherHelper.open(data.resolveLinkUrl('whatsapp')),
       ),
       DashedIconButton(
         icon: Assets.images.svg.email,
+        tooltip: 'Email',
         onTap: () => UrlLauncherHelper.open(data.resolveLinkUrl('email')),
       ),
       DashedIconButton(
         icon: Assets.images.svg.linkedIn,
+        tooltip: 'LinkedIn',
         onTap: () => UrlLauncherHelper.open(data.resolveLinkUrl('linkedin')),
       ),
       DashedIconButton(
         icon: Assets.images.svg.x,
+        tooltip: 'X (Twitter)',
         onTap: () => UrlLauncherHelper.open(data.resolveLinkUrl('x')),
       ),
     ];
@@ -205,8 +209,8 @@ class SendMessageButton extends StatelessWidget {
       onTap: isSubmitting ? null : onSend,
       child: Container(
         width: double.infinity,
-        height: 35.dm,
-        padding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 9.h),
+        height: 48,
+        padding: EdgeInsets.symmetric(horizontal: 17.w),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: AppColors.primary,
@@ -235,13 +239,15 @@ class SendMessageButton extends StatelessWidget {
 }
 
 class WhatsAppButton extends StatelessWidget {
-  const WhatsAppButton({super.key, this.onTap});
+  const WhatsAppButton({super.key, this.onTap, required this.tooltip});
 
   final VoidCallback? onTap;
+  final String tooltip;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return _LabeledTapTarget(
+      tooltip: tooltip,
       onTap: onTap,
       child: Container(
         width: 35.dm,
@@ -266,15 +272,18 @@ class DashedIconButton extends StatelessWidget {
   const DashedIconButton({
     super.key,
     required this.icon,
+    required this.tooltip,
     this.onTap,
   });
 
   final SvgGenImage icon;
+  final String tooltip;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return _LabeledTapTarget(
+      tooltip: tooltip,
       onTap: onTap,
       child: DottedBorder(
         color: AppColors.primary,
@@ -289,6 +298,43 @@ class DashedIconButton extends StatelessWidget {
           height: 35.dm,
           alignment: Alignment.center,
           child: icon.svg(width: 20.dm, height: 20.dm),
+        ),
+      ),
+    );
+  }
+}
+
+/// Icon-only button: adds a tooltip, a screen reader label and a 48px
+/// minimum hit area around the 35px visual.
+class _LabeledTapTarget extends StatelessWidget {
+  const _LabeledTapTarget({
+    required this.tooltip,
+    required this.onTap,
+    required this.child,
+  });
+
+  final String tooltip;
+  final VoidCallback? onTap;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Semantics(
+        button: true,
+        label: tooltip,
+        excludeSemantics: true,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: onTap,
+            behavior: HitTestBehavior.opaque,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+              child: Center(widthFactor: 1, heightFactor: 1, child: child),
+            ),
+          ),
         ),
       ),
     );
@@ -358,8 +404,12 @@ class ScanQrCode extends StatelessWidget {
       width: context.isMobile ? double.infinity : 0.36.sw,
       child: Column(
         children: [
-          Assets.images.photos.scanQr.image(),
-          16.verticalSpace,
+          // A phone can't scan its own screen; the WhatsApp/email buttons
+          // under the form cover the same need there.
+          if (!context.isMobile) ...[
+            Assets.images.photos.scanQr.image(),
+            16.verticalSpace,
+          ],
           Text(
             'I seek to push the limits of creativity to create high-engaging, user-friendly, and memorable interactive experiences.',
             textAlign: TextAlign.center,
@@ -396,8 +446,10 @@ class GradientStrokeText extends StatelessWidget {
             tablet: 96,
             desktop: 100,
           ),
+          // Outline-only text is too thin to read on small screens.
           foreground: Paint()
-            ..style = PaintingStyle.stroke
+            ..style =
+                context.isMobile ? PaintingStyle.fill : PaintingStyle.stroke
             ..strokeWidth = 2,
         ),
       ),

@@ -17,6 +17,8 @@ class ThemeToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) {
+        final tooltip =
+            state.isDark ? 'Switch to light theme' : 'Switch to dark theme';
         final icon = state.isDark
             ? $AssetsImagesSvgGen().darkMode.svg(
                 width: compact ? 22.r : 28.r,
@@ -29,6 +31,7 @@ class ThemeToggleButton extends StatelessWidget {
 
         if (compact) {
           return IconButton(
+            tooltip: tooltip,
             onPressed: () => context.read<ThemeCubit>().toggleTheme(),
             icon: icon,
             padding: EdgeInsets.zero,
@@ -40,6 +43,7 @@ class ThemeToggleButton extends StatelessWidget {
         }
 
         return IconButton(
+          tooltip: tooltip,
           onPressed: () => context.read<ThemeCubit>().toggleTheme(),
           icon: icon,
           padding: EdgeInsets.zero,

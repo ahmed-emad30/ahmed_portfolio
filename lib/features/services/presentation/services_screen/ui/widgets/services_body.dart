@@ -21,11 +21,9 @@ class ServicesBody extends StatelessWidget {
         .map((s) => (s.title, s.description))
         .toList();
 
-    if (cards.length < 4) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (context.isMobile) {
+    // Tablet/desktop layouts are designed around exactly four slots; any
+    // other count uses the stacked list.
+    if (context.isMobile || cards.length != 4) {
       return _ServicesMobile(cards: cards);
     }
     if (context.isTablet) {
@@ -51,67 +49,42 @@ class _ServicesMobile extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.centerLeft,
+            // Solid fill: the outlined heading fell below 3:1 contrast on
+            // the dotted background at phone sizes.
             child: Text(
               'Services',
-              style: AppTextStyle.style128ExtraBold.merge(
-                TextStyle(
-                  fontSize: context.responsiveSp(
-                    mobile: 56,
-                    tablet: 80,
-                    desktop: 128,
-                  ),
-                  foreground: AppMethods.textStroke(
-                    color: theme.primaryAccent,
-                    strokeWidth: 2,
-                  ),
+              style: AppTextStyle.style128ExtraBold.copyWith(
+                fontSize: context.responsiveSp(
+                  mobile: 56,
+                  tablet: 80,
+                  desktop: 128,
                 ),
+                color: theme.primaryAccent,
               ),
             ),
           ),
           24.verticalSpace,
           Assets.images.photos.anglePhone.image(height: 260.h),
           24.verticalSpace,
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: FeatureCard(
-                  title: cards[0].$1,
-                  description: cards[0].$2,
-                  compact: true,
-                ),
+          if (cards.isEmpty)
+            Text(
+              'No services listed yet.',
+              style: AppTextStyle.style16Regular.copyWith(
+                color: theme.bodyText.withValues(alpha: 0.85),
               ),
-              12.horizontalSpace,
-              Expanded(
-                child: FeatureCard(
-                  title: cards[2].$1,
-                  description: cards[2].$2,
-                  compact: true,
-                ),
+            ),
+          // One column: two columns at 375px clipped the descriptions.
+          for (final (index, card) in cards.indexed) ...[
+            if (index > 0) 16.verticalSpace,
+            SizedBox(
+              width: double.infinity,
+              child: FeatureCard(
+                title: card.$1,
+                description: card.$2,
+                compact: true,
               ),
-            ],
-          ),
-          16.verticalSpace,
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: FeatureCard(
-                  title: cards[1].$1,
-                  description: cards[1].$2,
-                  compact: true,
-                ),
-              ),
-              12.horizontalSpace,
-              Expanded(
-                child: FeatureCard(
-                  title: cards[3].$1,
-                  description: cards[3].$2,
-                  compact: true,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ],
       ),
     );
@@ -325,7 +298,7 @@ class FeatureCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.r),
         boxShadow: [
           BoxShadow(
-            color: AppColors.secondary.withValues(alpha: 0.3 * 255),
+            color: AppColors.secondary.withValues(alpha: 0.3),
             offset: const Offset(0, 2),
             blurRadius: 22,
           ),
@@ -344,8 +317,8 @@ class FeatureCard extends StatelessWidget {
           ),
           Text(
             description,
-            // textAlign: TextAlign.justify,
-            maxLines: 4,
+            maxLines: compact ? null : 4,
+            overflow: compact ? null : TextOverflow.ellipsis,
             style: AppTextStyle.style16Medium.copyWith(
               color: theme.bodyText,
               height: 1.3,

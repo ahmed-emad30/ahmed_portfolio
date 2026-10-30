@@ -11,8 +11,9 @@ For the full Supabase schema, Storage paths, and GitHub Pages deploy, see [`docs
 - Hostinger hosting plan with File Manager or FTP access
 - Domain (or subdomain) pointed at Hostinger
 - Supabase project credentials:
-  - URL: `https://tptaqfbmqifzewewnudg.supabase.co`
-  - Anon key: from Supabase Dashboard → **Project Settings → API**
+  - URL of the active project (`https://<ref>.supabase.co`)
+  - Publishable key: from Supabase Dashboard → **Project Settings → API**
+  - The `portfolio` schema listed under **Exposed schemas** (see [`docs/SUPABASE_AND_DEPLOY.md`](docs/SUPABASE_AND_DEPLOY.md))
 
 ## 1. Build for web
 
@@ -22,8 +23,9 @@ From the project root:
 flutter pub get
 
 flutter build web --release \
-  --dart-define=SUPABASE_URL=https://tptaqfbmqifzewewnudg.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=YOUR_ANON_KEY_HERE
+  --dart-define=SUPABASE_URL=https://YOUR_REF.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=YOUR_PUBLISHABLE_KEY \
+  --dart-define=SUPABASE_SCHEMA=portfolio
 ```
 
 Output folder: `build/web/`

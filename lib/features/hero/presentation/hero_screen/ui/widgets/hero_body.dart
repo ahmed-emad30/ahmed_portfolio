@@ -110,18 +110,13 @@ class _HeroMobileLayout extends StatelessWidget {
     final theme = context.portfolioTheme;
     final profile = context.watch<PortfolioContentCubit>().data.profile;
 
-
+    // Name, title and links come first so they sit above the fold; the photo
+    // gets a fixed height so nothing jumps when it finishes loading.
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(16.w, 72.h, 0.w, 24.h),
+      padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 24.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            // height: 0.75.sh,
-            width: double.infinity,
-            child: _ProfileImage(theme: theme, compact: true),
-          ),
-          24.verticalSpace,
           AutoSizeText(
             profile.displayNameWithBreak,
             maxLines: 2,
@@ -148,8 +143,14 @@ class _HeroMobileLayout extends StatelessWidget {
               color: theme.bodyText,
             ),
           ),
-          32.verticalSpace,
+          24.verticalSpace,
           const ContactSection(horizontal: true),
+          24.verticalSpace,
+          SizedBox(
+            height: 0.45.sh,
+            width: double.infinity,
+            child: _ProfileImage(theme: theme, compact: true),
+          ),
         ],
       ),
     );

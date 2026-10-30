@@ -9,6 +9,20 @@ abstract class ContactRemoteDataSource {
   });
 }
 
+/// Used when the build has no Supabase URL/key; the form reports a failure.
+class ContactRemoteDataSourceUnavailable implements ContactRemoteDataSource {
+  const ContactRemoteDataSourceUnavailable();
+
+  @override
+  Future<void> submitMessage({
+    required String name,
+    required String email,
+    required String phone,
+    required String message,
+  }) =>
+      Future.error(StateError('Supabase is not configured'));
+}
+
 class ContactRemoteDataSourceImp implements ContactRemoteDataSource {
   ContactRemoteDataSourceImp(this._client);
 

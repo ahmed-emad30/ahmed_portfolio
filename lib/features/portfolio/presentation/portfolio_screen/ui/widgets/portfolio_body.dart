@@ -162,12 +162,14 @@ class _PortfolioBodyState extends State<PortfolioBody> {
                     children: [
                       NavigationIconButton(
                         icon: Assets.images.svg.leftArrow.svg(),
+                        tooltip: 'Previous project',
                         onTap: _showPrevious,
                         compact: true,
                       ),
                       const Spacer(),
                       NavigationIconButton(
                         icon: Assets.images.svg.rightArrow.svg(),
+                        tooltip: 'Next project',
                         onTap: _showNext,
                         compact: true,
                       ),
@@ -281,11 +283,13 @@ class _PortfolioBodyState extends State<PortfolioBody> {
                   children: [
                     NavigationIconButton(
                       icon: Assets.images.svg.leftArrow.svg(),
+                      tooltip: 'Previous project',
                       onTap: _showPrevious,
                     ),
                     const Spacer(),
                     NavigationIconButton(
                       icon: Assets.images.svg.rightArrow.svg(),
+                      tooltip: 'Next project',
                       onTap: _showNext,
                     ),
                   ],
@@ -453,11 +457,13 @@ class NavigationIconButton extends StatelessWidget {
     super.key,
     required this.icon,
     required this.onTap,
+    required this.tooltip,
     this.compact = false,
   });
 
   final Widget icon;
   final VoidCallback onTap;
+  final String tooltip;
   final bool compact;
 
   @override
@@ -466,23 +472,23 @@ class NavigationIconButton extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: compact ? 4.w : 35.w),
-      child: Material(
-        color: AppColors.containerBackground,
-        borderRadius: BorderRadius.circular(10.r),
-        child: InkWell(
-          onTap: onTap,
+      child: Tooltip(
+        message: tooltip,
+        child: Material(
+          color: AppColors.containerBackground,
           borderRadius: BorderRadius.circular(10.r),
-          child: SizedBox(
-            width: size,
-            height: size,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: compact ? 12.w : 16.w,
-                vertical: compact ? 14.h : 21.h,
-              ),
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: icon,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(10.r),
+            child: SizedBox(
+              width: size,
+              height: size,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: compact ? 12.w : 16.w,
+                  vertical: compact ? 14.h : 21.h,
+                ),
+                child: FittedBox(fit: BoxFit.contain, child: icon),
               ),
             ),
           ),

@@ -32,22 +32,65 @@ flowchart LR
 
 | Field | Value |
 |--------|--------|
-| Name | Ahmed Portfolio |
-| Project ref | `tptaqfbmqifzewewnudg` |
-| Region | `eu-central-1` |
-| API URL | `https://tptaqfbmqifzewewnudg.supabase.co` |
+| Project | The owner's existing, active project (shared with other apps) |
+| Schema | `portfolio` (all tables live here, nothing in `public`) |
+| API URL | `https://<ref>.supabase.co` (passed at build time) |
 | Client config | [`lib/core/supabase/supabase_config.dart`](../lib/core/supabase/supabase_config.dart) |
 
-Dart defines (optional overrides; defaults are baked into `SupabaseConfig`):
+The original standalone project (`tptaqfbmqifzewewnudg`) was paused. Its content
+moves into the `portfolio` schema of the active project (see below).
 
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY` (publishable or legacy anon JWT)
+Dart defines (no URL/key is baked in):
 
-Init path: [`lib/main.dart`](../lib/main.dart) → `Supabase.initialize` → `ServiceLocator` → `PortfolioContentCubit.load()`.
+- `SUPABASE_URL`: required for live content
+- `SUPABASE_ANON_KEY`: publishable key (or legacy anon JWT)
+- `SUPABASE_SCHEMA`: defaults to `portfolio`
+
+Init path: [`lib/main.dart`](../lib/main.dart) → `Supabase.initialize(postgrestOptions: schema)` → `ServiceLocator` → `PortfolioContentCubit.load()`.
+
+If the defines are missing or the backend is unreachable, the site still renders
+the bundled `PortfolioContent.fallback`. The contact form is the only feature
+that needs the backend.
 
 ---
 
-## Database (public schema)
+## Setting up the `portfolio` schema
+
+1. **Schema + RLS + grants:** SQL Editor → run
+   [`supabase/migrations/20261003_portfolio_schema.sql`](../supabase/migrations/20261003_portfolio_schema.sql).
+   Idempotent, and touches nothing outside `portfolio`.
+2. **Expose it:** Settings → API → **Exposed schemas** → add `portfolio` → Save.
+   Without this the REST API returns `PGRST106` / 406.
+3. **Content**, using one of these:
+   - **Real data from the old project (preferred).** Restore the old project in the Dashboard, then on your machine:
+     ```bash
+     supabase db dump --db-url "$OLD_DB_URL" --schema public -f old_schema.sql
+     supabase db dump --db-url "$OLD_DB_URL" --schema public --data-only -f old_data.sql
+     ./scripts/rewrite_dump_to_portfolio.sh old_data.sql > portfolio_data.sql
+     ```
+     Compare `old_schema.sql` with the migration's column list first. If a column
+     exists only in the old schema, add it to the migration before loading. Then run
+     `portfolio_data.sql` in the SQL Editor (or `psql "$NEW_DB_URL" -f portfolio_data.sql`).
+     It replaces all `portfolio` rows, including `contact_messages`, inside one transaction.
+   - **Old project is gone.** Run
+     [`supabase/seed/portfolio_seed_from_repo.sql`](../supabase/seed/portfolio_seed_from_repo.sql).
+     It rebuilds content from the repo. `contact_messages` history, store links and
+     Storage URLs are lost.
+4. **Storage is not migrated.** Re-upload the CV and images to the active project's
+   Storage (or anywhere public), then set `profile.resume_url`, the `cv` row in
+   `social_links`, and `projects.*_url`.
+5. **Verify:**
+   ```bash
+   curl "$SUPABASE_URL/rest/v1/profile?select=display_name" \
+     -H "apikey: $SUPABASE_ANON_KEY" -H "Accept-Profile: portfolio"
+   ```
+
+`supabase/migrations/20260807_*.sql` now target `portfolio.` too. Their content
+is already in the seed, so you only need them to re-apply those updates.
+
+---
+
+## Database (`portfolio` schema)
 
 All content tables have **RLS enabled**. Intended policies:
 
@@ -159,13 +202,13 @@ Written by the Contact form ([`ContactRemoteDataSource`](../lib/features/contact
 ### Public URL form
 
 ```text
-https://tptaqfbmqifzewewnudg.supabase.co/storage/v1/object/public/<bucket>/<object-path>
+https://<ref>.supabase.co/storage/v1/object/public/<bucket>/<object-path>
 ```
 
 Example resume:
 
 ```text
-https://tptaqfbmqifzewewnudg.supabase.co/storage/v1/object/public/portfolio-public/AhmedEmadCV2025.pdf
+https://<ref>.supabase.co/storage/v1/object/public/portfolio-public/resumes/ahmed-emad-cv.pdf
 ```
 
 After upload, paste that URL into `profile.resume_url` and/or `social_links` where `key = 'cv'`.
@@ -184,7 +227,7 @@ Use stable, kebab-case paths so URLs stay predictable:
 
 `<slug>` must match `projects.slug` (e.g. `iconcierge`, `taggz`, `wepick`, `all-traders`).
 
-### Paths currently in use (live project)
+### Paths used in the old project (not migrated; re-upload as needed)
 
 **`portfolio-public/`** (root-level PDFs today):
 
@@ -232,7 +275,7 @@ No Flutter redeploy is required for content or Storage URL changes.
 | Content state | `lib/features/shared/presentation/logic/portfolio_content_cubit.dart` |
 | Contact insert | `lib/features/contact/data/data_source/contact_remote_data_source.dart` |
 
-On load failure the cubit exposes **empty** content (no seeded demo projects). Keep Supabase reachable for a filled site.
+The cubit starts with bundled `PortfolioContent.fallback` and swaps in Supabase content when the fetch succeeds. On failure the fallback stays on screen.
 
 ---
 
@@ -250,8 +293,9 @@ On load failure the cubit exposes **empty** content (no seeded demo projects). K
 flutter pub get
 
 flutter build web --release \
-  --dart-define=SUPABASE_URL=https://tptaqfbmqifzewewnudg.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=YOUR_KEY_HERE \
+  --dart-define=SUPABASE_URL=https://YOUR_REF.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=YOUR_PUBLISHABLE_KEY \
+  --dart-define=SUPABASE_SCHEMA=portfolio \
   --dart-define=USE_PATH_URL=true
 ```
 
@@ -271,8 +315,8 @@ Project site base path must match the repo name:
 flutter build web --release \
   --base-href=/ahmed_portfolio/ \
   --dart-define=USE_PATH_URL=true \
-  --dart-define=SUPABASE_URL=https://tptaqfbmqifzewewnudg.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=YOUR_KEY_HERE
+  --dart-define=SUPABASE_URL=https://YOUR_REF.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=YOUR_PUBLISHABLE_KEY
 ```
 
 ---
@@ -306,7 +350,8 @@ Repo settings: **Settings → Pages → Deploy from a branch → `gh-pages` / ro
 |---------|---------|---------|
 | `REPO_NAME` | `ahmed_portfolio` | Base href + Pages path |
 | `GH_PAGES_BRANCH` | `gh-pages` | Target branch |
-| `SUPABASE_URL` / `SUPABASE_ANON_KEY` | project defaults | Build-time backend |
+| `SUPABASE_URL` / `SUPABASE_ANON_KEY` | required | Build-time backend |
+| `SUPABASE_SCHEMA` | `portfolio` | Postgres schema |
 | `USE_PATH_URL` | `true` | URL strategy |
 | `SKIP_BUILD=1` | off | Redeploy existing `build/web` |
 | `DRY_RUN=1` | off | Build only, no push |
@@ -339,7 +384,7 @@ Uploading `build/web` into bucket `site` / `site/www/` does **not** work as a re
 
 - [ ] Site loads over HTTPS
 - [ ] Sections navigate; refresh on a deep path still works (404.html or `.htaccess`)
-- [ ] About / skills / projects match Table Editor (not empty)
+- [ ] About / skills / projects match Table Editor (not the bundled fallback)
 - [ ] Social + CV / resume open
 - [ ] Contact form creates a `contact_messages` row
 - [ ] Project covers use `image_url` when set; otherwise `image_key` local asset
@@ -350,7 +395,8 @@ Uploading `build/web` into bucket `site` / `site/www/` does **not** work as a re
 
 | Symptom | Likely fix |
 |---------|------------|
-| Empty portfolio / no projects | Check anon key, network, RLS SELECT on content tables |
+| Site shows bundled content, not DB edits | Check build defines, `portfolio` in Exposed schemas, RLS SELECT + grants |
+| REST `406` / `PGRST106` | `portfolio` not in Settings → API → Exposed schemas |
 | Contact submit fails | RLS INSERT on `contact_messages`; browser console errors |
 | Wrong / missing project image | Set `image_url` to Storage public URL; or fix `image_key` |
 | GitHub Pages blank | Confirm `--base-href=/ahmed_portfolio/` and Pages source = `gh-pages` |
