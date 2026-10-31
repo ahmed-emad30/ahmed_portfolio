@@ -91,6 +91,9 @@ Severity is rated against Material 3 guidance, WCAG 2.2 AA and common mobile-web
 ---
 
 ## 3. Execution order
+
+> **Superseded (2026-10-31):** see `docs/IMPLEMENTATION_PLAN.md` for remaining work and `docs/design/` for the UI spec.
+
 1. User: restore the old project and dump schema + data (§1a). User: provide the active project's URL and publishable key.
 2. Write the `portfolio` schema migration + data load (§1b) and the app changes (§1d), including the H1 fallback.
 3. User: run the migration in the active project's SQL editor and expose the schema (§1c).
