@@ -46,7 +46,8 @@ The project follows a feature-based architecture:
 
 - **State Management:** Use Cubits for simple state and Blocs for more complex event-driven logic.
 - **Dependency Injection:** Register new services and repositories in `lib/core/utils/service_locator.dart`.
-- **UI Responsiveness:** Use `ScreenUtil` for scaling dimensions (w, h, r, sp) based on the design size (1280x843).
+- **UI Responsiveness:** Use `ScreenUtil` for scaling dimensions (w, h, r, sp). The design size depends on the band: 375×812 (<600), 768×1024 (600–899), 1280×843 (≥900). See `docs/design/01-foundations.md` (TOK-BP).
+- **Design gate:** before any visual change, follow `AGENTS.md` and `docs/design/README.md`. Remaining work is in `docs/IMPLEMENTATION_PLAN.md`.
 - **Assets:** Add assets to `assets/` and run `build_runner` to update `lib/gen/assets.gen.dart`. Use `Assets.path.to.image.image()` to reference them.
 - **Navigation:** Define new routes in `Routes` strings and add them to `AppRouter` or `PortfolioApp` router configuration.
 - **Clean Code:** Adhere to `package:flutter_lints` rules. Prefer surgical edits and maintain existing architectural patterns.
